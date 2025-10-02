@@ -1,0 +1,25 @@
+{
+  "name": "phaser3-ts-vite-eslint",
+  "description": "A modern Phaser 3 template with TypeScript, Vite & ESLint. Integrated with GitHub Actions for CI/CD.",
+  "version": "1.0.0",
+  "author": "Paula Santamaría",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "tsc && npm run lint",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^8.57.0",
+    "eslint": "^8.57.0",
+    "globals": "^15.8.0",
+    "phaser": "^3.80.1",
+    "typescript": "^5.2.2",
+    "typescript-eslint": "^7.17.0",
+    "vite": "^5.3.4"
+  }
+}
