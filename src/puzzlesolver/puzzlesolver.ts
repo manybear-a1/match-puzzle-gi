@@ -3,7 +3,7 @@ export class PuzzleSolver {
     const matrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0));
     for (let i = 0; i < 9; i++) {
       for (let j = i + 1; j < 9; j++) {
-        matrix[i][j] = Math.random() < 0.1 ? 1 : 0;
+        matrix[i][j] = Math.random() < 0.3 ? 1 : 0;
         matrix[j][i] = matrix[i][j]; // Ensure symmetry
       }
     }
@@ -13,8 +13,8 @@ export class PuzzleSolver {
     let permutation: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     permutation = Phaser.Utils.Array.Shuffle(permutation);
     const shuffledMatrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0));
-    console.log('Permutation:', permutation);
-    console.log('Original Matrix:', matrix);
+    // console.log('Permutation:', permutation);
+    // console.log('Original Matrix:', matrix);
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
         shuffledMatrix[permutation[i]][permutation[j]] = matrix[i][j];
