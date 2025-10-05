@@ -39,10 +39,12 @@ export class InteractiveGraph extends Graph {
       const vertex = this.getVertexUnderPointer(pointer);
       if (vertex !== -1) {
         this.scene.input.setDefaultCursor('pointer');
-      } else {
+      }
+      else {
         this.scene.input.setDefaultCursor('default');
       }
-    } else {
+    }
+    else {
       // Draw drag line
       this.updateDragLine(pointer);
 
@@ -53,7 +55,8 @@ export class InteractiveGraph extends Graph {
 
         if (i === targetVertex && targetVertex !== -1) {
           this.nodes[i].highlight(0xff0000);
-        } else {
+        }
+        else {
           this.nodes[i].unhighlight();
         }
       }

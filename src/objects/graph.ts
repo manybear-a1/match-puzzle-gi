@@ -50,8 +50,8 @@ export class Graph extends Phaser.GameObjects.Container {
 
   setAdjacency(i: number, j: number, value: number): void {
     if (i < 0 || i >= 9 || j < 0 || j >= 9 || i === j) {
-      console.warn('Invalid indices for adjacency matrix');
-      console.warn(`i: ${ i }, j: ${ j }`);
+      // console.warn('Invalid indices for adjacency matrix');
+      // console.warn(`i: ${ i }, j: ${ j }`);
       return;
     }
     if (value === 1 && !this.matches[i][j]) {
@@ -66,11 +66,13 @@ export class Graph extends Phaser.GameObjects.Container {
       this.sendToBack(match);
       if (i < j && this.matches[j][i]) {
         this.matches[i][j].setVisible(false);
-      } else if (this.matches[j][i]) {
+      }
+      else if (this.matches[j][i]) {
         this.matches[j][i].setVisible(false);
       }
 
-    } else if (value === 0 && this.matches[i][j]) {
+    }
+    else if (value === 0 && this.matches[i][j]) {
       this.matches[i][j]?.destroy();
       this.matches[i][j] = null;
       //this.matches[j][i] = null;
