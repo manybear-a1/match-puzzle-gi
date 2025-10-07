@@ -6,8 +6,6 @@ export class PreloaderScene extends Scene {
   }
 
   preload(): void {
-    this.load.image('acho', 'acho.png');
-    this.load.image('ground', 'ground.png');
   }
 
   create(): void {
