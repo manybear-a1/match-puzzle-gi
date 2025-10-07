@@ -14,6 +14,9 @@ const config: Phaser.Types.Core.GameConfig = {
       gravity: { x: 0, y: 500 }
     }
   },
+  scale: {
+    mode: Phaser.Scale.FIT,
+  },
   scene: [PreloaderScene, GameScene, ClearScene],
   backgroundColor: '#21213B',
 };
