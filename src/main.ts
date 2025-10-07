@@ -5,6 +5,7 @@ import { GameScene } from './scenes/game.scene';
 import { ClearScene } from './scenes/clear.scene';
 
 const config: Phaser.Types.Core.GameConfig = {
+  parent: 'game-container',
   type: Phaser.AUTO,
   width: 1280,
   height: 720,
