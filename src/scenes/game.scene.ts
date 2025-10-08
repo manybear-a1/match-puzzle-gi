@@ -36,7 +36,8 @@ export class GameScene extends Scene {
       //console.log('Current Matrix:', interactiveGraph.getAdjacencyMatrix());
       //console.log('Target Matrix:', generatedMatrix);
     });
-    const minimum_moves = 9;//fixed for performance problem. //PuzzleSolver.solve(shuffledMatrix, generatedMatrix);
+    // const minimum_moves = PuzzleSolver.solve(shuffledMatrix, generatedMatrix);
+    const minimum_moves = 10; // Placeholder until solver is optimized
     this.add.text(20, 20, `Minimum Moves: ${ minimum_moves }`, { fontSize: '24px', color: '#ffffff' });
     const movesText = this.add.text(20, 50, 'Moves Made: 0', { fontSize: '24px', color: '#ffffff' });
     interactiveGraph.on('swap', () => {
