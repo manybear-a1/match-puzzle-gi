@@ -1,3 +1,4 @@
+import { Queue } from './queue.ts';
 export class PuzzleSolver {
   static generateRandomMatrix(): number[][] {
     const matrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0));
@@ -42,7 +43,7 @@ export class PuzzleSolver {
    */
   static solve(startMatrix: number[][], targetMatrix: number[][]): number {
     // Queue for BFS - using array as queue with shift/push operations
-    const queue: string[] = [];
+    const queue: Queue<string> = new Queue<string>();
 
     // Map to track visited states and their steps
     const map = new Map<string, number>();
@@ -51,8 +52,8 @@ export class PuzzleSolver {
     queue.push('012345678');
     map.set('012345678', 0);
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    while (!queue.isEmpty()) {
+      const current = queue.pop()!;
       const step = map.get(current)!;
 
       // Generate adjacency matrix based on the current permutation
