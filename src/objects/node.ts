@@ -30,6 +30,8 @@ export class Node extends Phaser.GameObjects.Container {
 
     // Add container to the scene
     scene.add.existing(this);
+    this.setSize(radius * 2, radius * 2);
+    this.setInteractive(this.circle?.input?.hitArea);
   }
   setDegree(degree: number): void {
     this._degree = degree;

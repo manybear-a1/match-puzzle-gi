@@ -35,6 +35,32 @@ export class Graph extends Phaser.GameObjects.Container {
       const nodeY = row * cellHeight + cellHeight / 2;
 
       this.nodes[i] = new Node(this.scene, nodeX, nodeY);
+      this.nodes[i].on('pointerover', () => {
+        this.nodes[i].setScale(1.2);
+        for (let j = 0; j < 9; j++) {
+          if (this.matches[i][j]) {
+            this.matches[i][j]?.setHighlighted(true);
+            this.nodes[j].highlight(0x00ffff);
+          }
+          if( this.matches[j][i]) {
+            this.matches[j][i]?.setHighlighted(true);
+            this.nodes[j].highlight(0x00ffff);
+          }
+        }
+      });
+      this.nodes[i].on('pointerout', () => {
+        this.nodes[i].setScale(1.0);
+        for (let j = 0; j < 9; j++) {
+          if (this.matches[i][j]) {
+            this.matches[i][j]?.setHighlighted(false);
+            this.nodes[j].unhighlight();
+          }
+          if( this.matches[j][i]) {
+            this.matches[j][i]?.setHighlighted(false);
+            this.nodes[j].unhighlight();
+          }
+        }
+      });
       this.add(this.nodes[i]);
     }
   }

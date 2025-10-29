@@ -79,6 +79,13 @@ export class InteractiveGraph extends Graph {
       for (const node of this.nodes) {
         node.unhighlight();
       }
+      for (const matchRow of this.matches) {
+        for (const match of matchRow) {
+          if (match) {
+            match.setHighlighted(false);
+          }
+        }
+      }
 
       this.selectedVertex = -1;
       this.scene.input.setDefaultCursor('default');

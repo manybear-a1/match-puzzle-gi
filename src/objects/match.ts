@@ -11,6 +11,8 @@ export class Match extends Phaser.GameObjects.Graphics {
   private headRadius: number = 5;
   private shortenBy: number = 30; // Amount to shorten match to not overlap with nodes
 
+  private highlighted: boolean = false;
+  private highlightColor: number = 0x00ffff; // Blue color for highlight
   constructor(scene: Phaser.Scene, startX: number, startY: number, endX: number, endY: number) {
     super(scene);
 
@@ -42,14 +44,25 @@ export class Match extends Phaser.GameObjects.Graphics {
     const adjStartY = midY - Math.sin(angle) * (adjustedLength / 2);
     const adjEndX = midX + Math.cos(angle) * (adjustedLength / 2);
     const adjEndY = midY + Math.sin(angle) * (adjustedLength / 2);
-
+    if (this.highlighted) {
+      this.lineStyle(this.stickWidth + 5, this.highlightColor);
+      this.lineBetween(adjStartX, adjStartY, adjEndX, adjEndY);
+    }
+    if (this.highlighted) {
+      this.fillStyle(this.highlightColor);
+      this.fillCircle(adjEndX, adjEndY, this.headRadius + 5);
+    }
     // Draw match stick body
+
     this.lineStyle(this.stickWidth, this.stickColor);
     this.lineBetween(adjStartX, adjStartY, adjEndX, adjEndY);
 
+
     // Draw match head at the end
+
     this.fillStyle(this.headColor);
     this.fillCircle(adjEndX, adjEndY, this.headRadius);
+
   }
 
   setStartPoint(x: number, y: number): void {
@@ -81,6 +94,10 @@ export class Match extends Phaser.GameObjects.Graphics {
 
   setHeadRadius(radius: number): void {
     this.headRadius = radius;
+    this.draw();
+  }
+  setHighlighted(highlighted: boolean): void {
+    this.highlighted = highlighted;
     this.draw();
   }
 }
