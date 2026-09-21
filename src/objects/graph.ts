@@ -7,6 +7,7 @@ export class Graph extends Phaser.GameObjects.Container {
   protected nodes: (Node)[];
   protected background: Phaser.GameObjects.Rectangle;
 
+  // default graph constructor with 9 nodes and 9 matches
   constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number,) {
     super(scene);
     this.x = x;

@@ -25,6 +25,35 @@
 
 スコアは最小の交換回数/あなたが頂点を交換した回数 * 100で計算されます。最大で100点です。
 
+# TODO（やりたいこと）
+- 難易度設定の追加
+
+  Easy, Normal(実装済み), Hard, Impossibleの四つ。
+
+  Easyが6頂点、Normalが9、Hardが25、Impossible が50くらい？
+
+  そのまま表示するとたぶん見えなくなるので、ちゃんと見えるように表示を改良する必要がある。（拡大、縮小を実装するとか、フォーカスしている頂点と辺以外が半透明になるとか）また、スコアの計算方法についても考え直さなければならない。
+
+- 無限に続けられるモード(Infinity)の追加
+  
+  下からどんどんマッチ棒が出てくるみたいな。
+
+- パズルソルバーの改良
+  
+  現在は総当たりでグラフ同型性判定問題を解いているので、もう少し効率的なアルゴリズムを見つけたい。
+
+  また、今のところ最短手数しか示していないので、実際の手順も示せるようにしたい。
+
+- 別タイプのパズルを追加する
+
+  グラフの平面埋め込み（あるいは交差が最小となる埋め込み、またはクラトフスキー部分グラフ）を求めるパズル
+  
+  [アルゴリズムの候補1](https://www.uni-konstanz.de/algo/publications/b-lrpt-sub.pdf)
+
+  [候補2](https://mathworld.wolfram.com/GraphCrossingNumber.html)（integer programmingのやつと、Quickcross）
+
+  [参考1](https://mathworld.wolfram.com/PlanarGraph.html),[参考2](https://mathworld.wolfram.com/GraphCrossingNumber.html)
+
 [![Deploy](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/deploy.yml/badge.svg)](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/deploy.yml)
 [![Build](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/build.yml/badge.svg)](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/build.yml)
 
@@ -44,6 +73,7 @@ A modern Phaser 3 template: Phaser 3 + TypeScript + Vite + ESLint + GitHub Pages
 - [ルール](#ルール)
   - [ざっくりとしたルール](#ざっくりとしたルール)
   - [厳密なルール](#厳密なルール)
+- [TODO（やりたいこと）](#todoやりたいこと)
 - [Dependencies](#dependencies)
 - [Quick start](#quick-start)
 - [Project structure](#project-structure)
