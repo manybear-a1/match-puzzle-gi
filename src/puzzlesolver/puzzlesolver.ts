@@ -1,34 +1,13 @@
 import { Queue } from './queue.ts';
 export class PuzzleSolver {
-  static generateRandomMatrix(): number[][] {
-    const matrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0));
-    for (let i = 0; i < 9; i++) {
-      for (let j = i + 1; j < 9; j++) {
-        matrix[i][j] = Math.random() < 0.3 ? 1 : 0;
-        matrix[j][i] = matrix[i][j]; // Ensure symmetry
-      }
-    }
-    return matrix;
-  }
-  static shuffleMatrix(matrix: number[][]): number[][] {
-    let permutation: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    permutation = Phaser.Utils.Array.Shuffle(permutation);
-    const shuffledMatrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0));
-    // console.log('Permutation:', permutation);
-    // console.log('Original Matrix:', matrix);
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        shuffledMatrix[permutation[i]][permutation[j]] = matrix[i][j];
-      }
-    }
-    return shuffledMatrix;
-  }
+
   /**
    * Checks if two adjacency matrices are identical
    */
   static isSolved(adjMatrix1: number[][], adjMatrix2: number[][]): boolean {
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
+    const size = adjMatrix1.length;
+    for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size; j++) {
         if (adjMatrix1[i][j] !== adjMatrix2[i][j]) {
           return false;
         }
@@ -42,6 +21,11 @@ export class PuzzleSolver {
    * to transform startMatrix into targetMatrix through permutations
    */
   static solve(startMatrix: number[][], targetMatrix: number[][]): number {
+    const size = startMatrix.length;
+    if (size > 9) {
+      return -1; // Not supported for sizes greater than 9 because of the factorial growth in permutations
+    }
+
     // Queue for BFS - using array as queue with shift/push operations
     const queue: Queue<string> = new Queue<string>();
 
@@ -49,17 +33,18 @@ export class PuzzleSolver {
     const map = new Map<string, number>();
 
     // Initial state - identity permutation
-    queue.push('012345678');
-    map.set('012345678', 0);
+    const initialPermutation = Array.from({ length: size }, (_, i) => i).join('');
+    queue.push(initialPermutation);
+    map.set(initialPermutation, 0);
 
     while (!queue.isEmpty()) {
       const current = queue.pop()!;
       const step = map.get(current)!;
 
       // Generate adjacency matrix based on the current permutation
-      const currentMatrix = Array(9).fill(null).map(() => Array(9).fill(0));
-      for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
+      const currentMatrix = Array(size).fill(null).map(() => Array(size).fill(0));
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
           currentMatrix[i][j] = startMatrix[parseInt(current[i])][parseInt(current[j])];
         }
       }
@@ -69,9 +54,10 @@ export class PuzzleSolver {
         return step;
       }
 
+      // If not, continue with the next permutation
       // Try all adjacent swaps in the permutation
-      for (let i = 0; i < 9; i++) {
-        for (let j = i + 1; j < 9; j++) {
+      for (let i = 0; i < size; i++) {
+        for (let j = i + 1; j < size; j++) {
           // Convert string to array for swapping
           const chars = current.split('');
 

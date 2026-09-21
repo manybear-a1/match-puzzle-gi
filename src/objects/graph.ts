@@ -2,86 +2,37 @@ import Phaser from 'phaser';
 import { Match } from './match';
 import { Node } from './node';
 
+// Graph class represents a graph with nodes and matches (edges) based on an adjacency matrix
 export class Graph extends Phaser.GameObjects.Container {
-  protected matches: (Match | null)[][];
-  protected nodes: (Node)[];
+  protected matches: (Match | null)[][] = [];
+  protected nodes: (Node)[] = [];
   protected background: Phaser.GameObjects.Rectangle;
 
   // default graph constructor with 9 nodes and 9 matches
-  constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number,) {
+  constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, matrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0))) {
     super(scene);
     this.x = x;
     this.y = y;
     this.height = height;
     this.width = width;
-    this.matches = Array(9).fill(null).map(() => Array(9).fill(null));
-    this.nodes = Array(9);
 
     scene.add.existing(this);
-
 
     this.background = scene.add.rectangle(0, 0, width, height);
     this.background.setStrokeStyle(1, 0x000000);
     this.background.setOrigin(0, 0);
     this.add(this.background);
-    const cellWidth = this.width / 3;
-    const cellHeight = this.height / 3;
 
-    // Create nodes first 
-    for (let i = 0; i < 9; i++) {
-      const row = Math.floor(i / 3);
-      const col = i % 3;
-
-      const nodeX = col * cellWidth + cellWidth / 2;
-      const nodeY = row * cellHeight + cellHeight / 2;
-
-      this.nodes[i] = new Node(this.scene, nodeX, nodeY);
-      this.nodes[i].on('pointerover', () => {
-        this.nodes[i].setScale(1.2);
-        for (let j = 0; j < 9; j++) {
-          if (this.matches[i][j]) {
-            this.matches[i][j]?.setHighlighted(true);
-            this.nodes[j].highlight(0x00ffff);
-          }
-          if( this.matches[j][i]) {
-            this.matches[j][i]?.setHighlighted(true);
-            this.nodes[j].highlight(0x00ffff);
-          }
-        }
-      });
-      this.nodes[i].on('pointerout', () => {
-        this.nodes[i].setScale(1.0);
-        for (let j = 0; j < 9; j++) {
-          if (this.matches[i][j]) {
-            this.matches[i][j]?.setHighlighted(false);
-            this.nodes[j].unhighlight();
-          }
-          if( this.matches[j][i]) {
-            this.matches[j][i]?.setHighlighted(false);
-            this.nodes[j].unhighlight();
-          }
-        }
-      });
-      this.add(this.nodes[i]);
-    }
+    this.setAdjacencyMatrix(matrix);
   }
-  updateDegree(i: number): void {
-    let degree = 0;
-    for (let j = 0; j < 9; j++) {
-      if (this.matches[i][j]) {
-        degree++;
-      }
-    }
-    this.nodes[i].setDegree(degree);
-  }
-
-  setAdjacency(i: number, j: number, value: number): void {
-    if (i < 0 || i >= 9 || j < 0 || j >= 9 || i === j) {
+  //directed
+  addAdjacency(i: number, j: number): void {
+    if (i < 0 || i >= this.nodes.length || j < 0 || j >= this.nodes.length || i === j) {
       // console.warn('Invalid indices for adjacency matrix');
       // console.warn(`i: ${ i }, j: ${ j }`);
       return;
     }
-    if (value === 1 && !this.matches[i][j]) {
+    if (!this.matches[i][j]) {
       const x1 = this.nodes[i].x;
       const y1 = this.nodes[i].y;
       const x2 = this.nodes[j].x;
@@ -90,6 +41,10 @@ export class Graph extends Phaser.GameObjects.Container {
       this.matches[i][j] = match;
       // this.matches[j][i] = match;
       this.add(match);
+      match.connectNodes(this.nodes[i], this.nodes[j]);
+      this.nodes[i].addMatch(match);
+      this.nodes[j].addMatch(match);
+
       this.sendToBack(match);
       if (i < j && this.matches[j][i]) {
         this.matches[i][j].setVisible(false);
@@ -99,16 +54,36 @@ export class Graph extends Phaser.GameObjects.Container {
       }
 
     }
-    else if (value === 0 && this.matches[i][j]) {
-      this.matches[i][j]?.destroy();
-      this.matches[i][j] = null;
-      //this.matches[j][i] = null;
-      if (this.matches[j][i]) {
-        this.matches[j][i].setVisible(true);
+  }
+
+  setAdjacencyMatrix(matrix: number[][]): void {
+    this.destroyNodes();
+    const size = matrix.length;
+    this.matches = Array(size).fill(null).map(() => Array(size).fill(null));
+    this.nodes = Array(size).fill(null);
+
+    const cellWidth = this.width / Math.sqrt(size);
+    const cellHeight = this.height / Math.sqrt(size);
+
+    // Create nodes first 
+    for (let i = 0; i < matrix.length; i++) {
+      const row = Math.floor(i / Math.sqrt(size));
+      const col = i % Math.sqrt(size);
+
+      const nodeX = col * cellWidth + cellWidth / 2;
+      const nodeY = row * cellHeight + cellHeight / 2;
+
+      this.nodes[i] = new Node(this.scene, nodeX, nodeY);
+      this.add(this.nodes[i]);
+    }
+    for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size; j++) {
+        if (i == j) continue;
+        if (matrix[i][j] === 1) {
+          this.addAdjacency(i, j);
+        }
       }
     }
-    this.updateDegree(i);
-    this.updateDegree(j);
   }
 
   getAdjacency(i: number, j: number): number {
@@ -116,19 +91,37 @@ export class Graph extends Phaser.GameObjects.Container {
   }
   getAdjacencyMatrix(): number[][] {
     const matrix: number[][] = [];
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < this.nodes.length; i++) {
       matrix[i] = [];
-      for (let j = 0; j < 9; j++) {
+      for (let j = 0; j < this.nodes.length; j++) {
         matrix[i][j] = this.getAdjacency(i, j);
       }
     }
     return matrix;
   }
 
+  setNodePosition(i: number, x: number, y: number): void {
+    if (i < 0 || i >= this.nodes.length) {
+      // console.warn('Invalid node index');
+      return;
+    }
+    this.nodes[i].setPosition(x, y);
+  }
+  destroyNodes(): void {
+    for (const node of this.nodes) {
+      node.destroy();
+    }
+    for (const matchRow of this.matches) {
+      for (const match of matchRow) {
+        if (match) {
+          match.destroy();
+        }
+      }
+    }
+  }
   destroy(): void {
     // Clean up objects when graph is destroyed
-    this.nodes.forEach(node => node.destroy());
-    this.matches.forEach(match => match.forEach(m => m?.destroy()));
+    this.destroyNodes();
     super.destroy();
   }
 }

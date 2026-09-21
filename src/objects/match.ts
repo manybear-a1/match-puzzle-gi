@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-
+import { Node } from './node';
 export class Match extends Phaser.GameObjects.Graphics {
   private startX: number;
   private startY: number;
@@ -13,6 +13,8 @@ export class Match extends Phaser.GameObjects.Graphics {
 
   private highlighted: boolean = false;
   private highlightColor: number = 0x00ffff; // Blue color for highlight
+  private startNode: Node | null = null;
+  private endNode: Node | null = null;
   constructor(scene: Phaser.Scene, startX: number, startY: number, endX: number, endY: number) {
     super(scene);
 
@@ -22,6 +24,25 @@ export class Match extends Phaser.GameObjects.Graphics {
     this.endY = endY;
 
     scene.add.existing(this);
+    this.draw();
+  }
+  connectNodes(startNode: Node, endNode: Node): void {
+    this.startNode = startNode;
+    this.endNode = endNode;
+    this.startX = startNode.x;
+    this.startY = startNode.y;
+    this.endX = endNode.x;
+    this.endY = endNode.y;
+    startNode.addListener('positionChanged', () => {
+      this.startX = startNode.x;
+      this.startY = startNode.y;
+      this.draw();
+    }, this);
+    endNode.addListener('positionChanged', () => {
+      this.endX = endNode.x;
+      this.endY = endNode.y;
+      this.draw();
+    }, this);
     this.draw();
   }
 
@@ -99,5 +120,12 @@ export class Match extends Phaser.GameObjects.Graphics {
   setHighlighted(highlighted: boolean): void {
     this.highlighted = highlighted;
     this.draw();
+  }
+
+  getStartNode(): Node | null {
+    return this.startNode;
+  }
+  getEndNode(): Node | null {
+    return this.endNode;
   }
 }

@@ -1,15 +1,14 @@
 import Phaser from 'phaser';
-
+import { Match } from './match';
 export class Node extends Phaser.GameObjects.Container {
   private circle: Phaser.GameObjects.Arc;
   private degreeText: Phaser.GameObjects.Text;
-  private _degree: number;
   private _radius: number;
+  private matches: Match[] = [];
 
   constructor(scene: Phaser.Scene, x: number, y: number, radius: number = 15) {
     super(scene, x, y);
 
-    this._degree = 0;
     this._radius = radius;
 
     // Create the circle graphic
@@ -31,25 +30,39 @@ export class Node extends Phaser.GameObjects.Container {
     // Add container to the scene
     scene.add.existing(this);
     this.setSize(radius * 2, radius * 2);
-    this.setInteractive(this.circle?.input?.hitArea);
-  }
-  setDegree(degree: number): void {
-    this._degree = degree;
-    this.degreeText.setText(degree.toString());
-  }
+    //this.setInteractive(this.circle?.input?.hitArea);
+    this.setInteractive({
+      hitArea: this.circle.input?.hitArea,
+      draggable: true,
+    });
+    this.on('pointerover', () => {
+      this.setScale(1.2);
+      for (let i = 0; i < this.matches.length; i++) {
 
+        this.matches[i].setHighlighted(true);
+        this.matches[i].getStartNode()?.highlight(0x00ffff);
+        this.matches[i].getEndNode()?.highlight(0x00ffff);
+      }
+      this.highlight();
+    });
+    this.on('pointerout', () => {
+      this.setScale(1.0);
+      for (let i = 0; i < this.matches.length; i++) {
+
+        this.matches[i].setHighlighted(false);
+        this.matches[i].getStartNode()?.unhighlight();
+        this.matches[i].getEndNode()?.unhighlight();
+      }
+      this.unhighlight();
+    });
+  }
+  // add a match to the node
+  addMatch(match: Match): void {
+    this.matches.push(match);
+    this.degreeText.setText(this.getDegree().toString());
+  }
   getDegree(): number {
-    return this._degree;
-  }
-
-  incrementDegree(): void {
-    this.setDegree(this._degree + 1);
-  }
-
-  decrementDegree(): void {
-    if (this._degree > 0) {
-      this.setDegree(this._degree - 1);
-    }
+    return this.matches.length / 2;
   }
 
   setRadius(radius: number): void {
@@ -65,5 +78,11 @@ export class Node extends Phaser.GameObjects.Container {
   }
   unhighlight(): void {
     this.circle.setStrokeStyle(1, 0x000000);
+  }
+
+  setPosition(x: number, y: number): this {
+    super.setPosition(x, y);
+    this.emit('positionChanged');
+    return this;
   }
 }

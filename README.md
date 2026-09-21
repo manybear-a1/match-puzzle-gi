@@ -21,7 +21,7 @@
 
 - あなたができる操作は二つの頂点を交換することだけです。具体的には、交換したい頂点のうちの一つを選び、その頂点を左クリックしたのちもう一つの頂点までドラッグして離すことにより交換できます。この交換によって、交換した二つの頂点に結びついているマッチ棒の片側の位置も交換後の位置に移動されます。
 
-- マッチ棒の向きや長さは自動的に調整されるため気にする必要はありません。ちなみに、マッチ棒の頭はマッチ棒の二つの結びついている頂点の内、左側もしくは上側にあるほうにつきます。
+- マッチ棒の長さは自動的に調整されます。マッチ棒の頭の向きは無視します。
 
 このパズルは必ず解をもつようにランダムに生成されます。（盤面の生成確率はおそらく等確率ではありません。生成コードは（[ここ](/src/puzzlesolver/puzzlesolver.ts)にあります）このゲームの目標は最小の交換回数で同じパターンを作ることです。
 
@@ -48,7 +48,7 @@
 
 - パズル生成の改良
   
-  現在は完全ランダム（各辺が30%で出現する）に生成しているため、盤面ごとの難易度のぶれ幅が大きい。
+  現在は完全ランダム（各辺が30%で出現する）に生成しているため、盤面ごとの難易度のぶれ幅が大きい。生成後の盤面のシャッフルも改良する必要があるかもしれない。（例えば攪乱順列にするとか）
 
 - 別タイプのパズルを追加する
 
@@ -60,6 +60,9 @@
 
   [参考1](https://mathworld.wolfram.com/PlanarGraph.html),[参考2](https://mathworld.wolfram.com/GraphCrossingNumber.html)
 
+- （自動）テスト
+  
+  特にアルゴリズム関連のテストが必要。
 [![Deploy](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/deploy.yml/badge.svg)](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/deploy.yml)
 [![Build](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/build.yml/badge.svg)](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/build.yml)
 
