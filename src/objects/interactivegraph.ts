@@ -77,6 +77,8 @@ export class InteractiveGraph extends Graph {
     const y1 = this.nodes[v1].y;
     const x2 = this.nodes[v2].x;
     const y2 = this.nodes[v2].y;
+    this.moved_count++;
+    this.emit('swap', { v1, v2 });
     // this.nodes[v1].setPosition(this.nodes[v2].x, this.nodes[v2].y);
     // this.nodes[v2].setPosition(x, y);
     // Tween the nodes to their new positions
@@ -94,8 +96,8 @@ export class InteractiveGraph extends Graph {
       onComplete: () => {
         this.nodes[v1].setPosition(x2, y2);
         this.nodes[v2].setPosition(x1, y1);
-        this.moved_count++;
-        this.emit('swap', { v1, v2 });
+
+        this.emit('swapComplete', { v1, v2 });
       },
       onStop: () => {
         this.nodes[v1].setPosition(x2, y2);
