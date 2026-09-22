@@ -5,7 +5,8 @@ export class GameScene extends Scene {
   }
 
   create(): void {
-    this.add.text(640, 180, 'マッチ棒パズル (Matchstick Puzzle)', { fontSize: '96px', color: '#ffffff' }).setOrigin(0.5).setPadding(20, 20, 20, 20);
+    this.add.text(640, 180, 'マッチ棒パズル', { fontSize: '96px', color: '#ffffff' }).setOrigin(0.5).setPadding(20, 20, 20, 20);
+    this.add.text(640, 240, 'Matchstick Puzzle', { fontSize: '24px', color: '#ffffff' }).setOrigin(0.5).setPadding(20, 20, 20, 20);
     this.add.text(640, 300, 'マッチ棒を動かして、正しい形にしてください。', { fontSize: '32px', color: '#ffffff' }).setOrigin(0.5).setPadding(20, 20, 20, 20);
     const playtext = this.add.text(640, 360, 'Game Start', { fontSize: '32px', color: '#ffffff' }).setOrigin(0.5, 0.5).setPadding(20, 20, 20, 20).setInteractive();
     let difficulty = 'normal';
