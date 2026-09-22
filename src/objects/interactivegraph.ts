@@ -73,13 +73,40 @@ export class InteractiveGraph extends Graph {
     this.nodes[v2] = tempNode;
 
     // Update the positions of the nodes
-    const x = this.nodes[v1].x;
-    const y = this.nodes[v1].y;
-    this.nodes[v1].setPosition(this.nodes[v2].x, this.nodes[v2].y);
-    this.nodes[v2].setPosition(x, y);
-
-    this.moved_count++;
-    this.emit('swap', { v1, v2 });
+    const x1 = this.nodes[v1].x;
+    const y1 = this.nodes[v1].y;
+    const x2 = this.nodes[v2].x;
+    const y2 = this.nodes[v2].y;
+    // this.nodes[v1].setPosition(this.nodes[v2].x, this.nodes[v2].y);
+    // this.nodes[v2].setPosition(x, y);
+    // Tween the nodes to their new positions
+    this.scene.tweens.add({
+      targets: [this.nodes[v1], this.nodes[v2]],
+      onUpdate: (tween, target) => {
+        const progress = Phaser.Math.Easing.Expo.InOut(tween.progress);
+        if (target === this.nodes[v1]) {
+          target.setPosition(Phaser.Math.Interpolation.Linear([x1, x2], progress), Phaser.Math.Interpolation.Linear([y1, y2], progress));
+        }
+        else if (target === this.nodes[v2]) {
+          target.setPosition(Phaser.Math.Interpolation.Linear([x2, x1], progress), Phaser.Math.Interpolation.Linear([y2, y1], progress));
+        }
+      },
+      onComplete: () => {
+        this.nodes[v1].setPosition(x2, y2);
+        this.nodes[v2].setPosition(x1, y1);
+        this.moved_count++;
+        this.emit('swap', { v1, v2 });
+      },
+      onStop: () => {
+        this.nodes[v1].setPosition(x2, y2);
+        this.nodes[v2].setPosition(x1, y1);
+      },
+      props: {
+        x: { value: 0 },
+        y: { value: 0 }
+      },
+      duration: 300,
+    });
   }
 
   getMovedCount(): number {
