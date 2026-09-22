@@ -1,8 +1,7 @@
 import { GameBase } from '../gamebase.ts';
 
-export class Normal extends GameBase {
+export class Hard extends GameBase {
   constructor() {
-    super('normal', 9);
+    super('hard', 16);
   }
-
 }

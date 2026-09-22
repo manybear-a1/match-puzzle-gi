@@ -10,7 +10,11 @@ export class ClearScene extends Scene {
     this.input.setDefaultCursor('pointer');
     this.input.once('pointerdown', () => {
       this.scene.stop('clear');
-      this.scene.stop('game');
+      this.scene.manager.getScenes(false).forEach(scene => {
+        if (scene.scene.key !== 'clear') {
+          scene.scene.stop();
+        }
+      });
       this.scene.start('game');
     });
   }

@@ -1,3 +1,6 @@
-import { NormalScene } from './normal.ts';
+import { Normal } from './normal.ts';
+import { Easy } from './easy.ts';
+import { Hard } from './hard.ts';
+import { Impossible } from './impossible.ts';
 
-export const difficulties = [NormalScene];
+export const difficulties = [Easy, Normal, Hard, Impossible];

@@ -54,7 +54,7 @@ export class InteractiveGraph extends Graph {
   private swapVertices(v1: number, v2: number): void {
     if (v1 === v2) return;
     // Swap the connections in the adjacency matrix
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < this.nodes.length; i++) {
       if (i === v1 || i === v2) continue;
 
       // Swap connections to other vertices

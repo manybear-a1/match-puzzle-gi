@@ -61,14 +61,15 @@ export class Graph extends Phaser.GameObjects.Container {
     const size = matrix.length;
     this.matches = Array(size).fill(null).map(() => Array(size).fill(null));
     this.nodes = Array(size).fill(null);
-
-    const cellWidth = this.width / Math.sqrt(size);
-    const cellHeight = this.height / Math.sqrt(size);
+    const columns = Math.ceil(Math.sqrt(size));
+    const rows = Math.ceil(size / columns);
+    const cellWidth = this.width / columns;
+    const cellHeight = this.height / rows;
 
     // Create nodes first 
-    for (let i = 0; i < matrix.length; i++) {
-      const row = Math.floor(i / Math.sqrt(size));
-      const col = i % Math.sqrt(size);
+    for (let i = 0; i < size; i++) {
+      const row = Math.floor(i / columns);
+      const col = i % columns;
 
       const nodeX = col * cellWidth + cellWidth / 2;
       const nodeY = row * cellHeight + cellHeight / 2;
@@ -99,13 +100,18 @@ export class Graph extends Phaser.GameObjects.Container {
     }
     return matrix;
   }
-
+  // relative positioning of nodes based on the graph's position and size
   setNodePosition(i: number, x: number, y: number): void {
     if (i < 0 || i >= this.nodes.length) {
       // console.warn('Invalid node index');
       return;
     }
-    this.nodes[i].setPosition(x, y);
+    if (x < 0 || x > 1 || y < 0 || y > 1) {
+      // console.warn('Invalid relative position');
+      return;
+    }
+    //this.nodes[i].setPosition(x, y);
+    this.nodes[i].setPosition(this.width * x, this.height * y);
   }
   destroyNodes(): void {
     for (const node of this.nodes) {
