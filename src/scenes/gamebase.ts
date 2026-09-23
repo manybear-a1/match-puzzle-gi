@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { Graph } from '../objects/graph.ts';
 import { InteractiveGraph } from '../objects/interactivegraph.ts';
 import { PuzzleSolver } from '../puzzlesolver/puzzlesolver.ts';
+import { SmartBruteForceSolver } from '../puzzlesolver/smart-bruteforce.ts';
 import { PuzzleGenerator } from '../puzzlegenerator/puzzlegenerator.ts';
 export class GameBase extends Scene {
   private nodeCount: number;
@@ -39,7 +40,7 @@ export class GameBase extends Scene {
     // Calculate the minimum moves after a short delay to ensure the graph is fully initialized
     if (this.nodeCount <= 9) {
       this.time.delayedCall(100, () => {
-        const solutionPath = PuzzleSolver.solvePath(shuffledMatrix, generatedMatrix);
+        const solutionPath = SmartBruteForceSolver.solvePath(shuffledMatrix, generatedMatrix);
         const minimum_moves = solutionPath.length;
         this.add.text(20, 50, `Minimum Moves: ${ minimum_moves }`, { fontSize: '24px', color: '#ffffff' });
         const scoreText = this.add.text(20, 80, 'Score: 100', { fontSize: '24px', color: '#ffffff' });
@@ -77,7 +78,7 @@ export class GameBase extends Scene {
           });
         });
         nextStepButton.on('pointerdown', () => {
-          const currentPath = PuzzleSolver.solvePath(interactiveGraph.getAdjacencyMatrix(), generatedMatrix);
+          const currentPath = SmartBruteForceSolver.solvePath(interactiveGraph.getAdjacencyMatrix(), generatedMatrix);
           if (currentPath.length === 0) {
             solutionText.setText('Already solved.');
             return;

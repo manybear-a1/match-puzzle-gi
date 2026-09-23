@@ -7,7 +7,7 @@ export default [
     files: ['**/*.{js,mjs,cjs,ts}']
   },
   {
-    ignores: ['dist/**', 'node_modules/**']
+    ignores: ['dist/**', 'node_modules/**', '.tmp/**']
   },
   {
     languageOptions: { globals: globals.browser }
