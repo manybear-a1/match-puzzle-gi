@@ -111,6 +111,7 @@ export class Match extends Phaser.GameObjects.Graphics {
     if (segmentLengthSquared === 0) return false;
     // Project point onto the line segment, clamping to the segment
     // a dot b / |a|^2 = |b| cos (theta) / |a| ( a is the segment vector, b is the vector from start to point)
+    // cos (theta) is not negative if and only if theta is between -90 and 90 degrees (inclusive), which means the projection is on the segment.
     const projection = Math.max(0, Math.min(1, ((x - startX) * segmentX + (y - startY) * segmentY) / segmentLengthSquared));
     // Find the nearest point on the segment
     // (|b| cos (theta) / |a|) * a = |b| cos (theta) * e (e is the unit vector of a)
