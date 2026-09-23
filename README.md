@@ -25,18 +25,32 @@
 
 このパズルは必ず解をもつようにランダムに生成されます。（盤面の生成確率はおそらく等確率ではありません。生成コードは（[ここ](/src/puzzlesolver/puzzlesolver.ts)にあります）このゲームの目標は最小の交換回数で同じパターンを作ることです。
 
-スコアは最小の交換回数/あなたが頂点を交換した回数 * 100で計算されます。最大で100点です。
+スコアは今のところEasyとNormalにしかありません。EasyとNormalにおいては、スコアは最小の交換回数/あなたが頂点を交換した回数 * 100で計算されます。最大で100点です。
+# その他機能
+- 難易度設定
+
+  Easy, Normal, Hard, Impossibleの四つ。
+
+  それぞれ盤面のサイズがEasyが2x3頂点、Normalが3x3頂点、Hardが4x4頂点、Impossibleが5x5頂点となっている。
+
+ 
+- ハイライト機能
+  
+  マッチ棒の上にポインタをホバーさせることでそのマッチ棒と、マッチ棒に直接繋がっている関節をハイライトできる。
+
+  位置が確定している関節を右クリックすることで固定することができ、固定された関節は青色になる。
+
+  関節の上にポインタをホバーさせることでその関節と、関節に直接繋がっているマッチ棒をハイライトできる。
+- 解答機能
+  
+  EasyとNormalでは、最短手数の計算表示機能が利用でき、ヒントや解答として利用できる。
+
+  右上の「Show Shortest Solution」を押すことで、最短手数の解答を表示できる。解答表示場面では、「Replay From Start」ボタンを押すことで、最初から順番に解答の手順を表示することができ、またその下のシークバーを動かすことで途中までの解答を表示することができる。
+
+  「Show Shortest Solution」の下の「Next Shortest Step」ボタンを押すことで、現在の盤面から始めた最短手数の解答の次の手順をコンピューターに代わりに操作してもらうことができる。
 
 # TODO（やりたいこと）
-- 難易度設定の追加
 
-  Easy, Normal(実装済み), Hard, Impossibleの四つ。
-
-  Easyが6頂点、Normalが9、Hardが25、Impossible が50くらい？
-
-  そのまま表示するとたぶん見えなくなるので、ちゃんと見えるように表示を改良する必要がある。（拡大、縮小を実装するとか、<del>フォーカスしている頂点と辺以外が半透明になるとか</del> ハイライト機能が既にあった。）また、スコアの計算方法についても考え直さなければならない。
-
-  仮実装は完了したが、人間の記憶力的に、確定している頂点をマークする機能がないと困ることが分かった。
 
 - 無限に続けられるモード(Infinity)の追加
   
@@ -46,7 +60,7 @@
   
   現在は総当たりでグラフ同型性判定問題を解いているので、もう少し効率的なアルゴリズムを見つけたい。
 
-  また、今のところ最短手数しか示していないので、実際の手順も示せるようにしたい。
+  また、今のところ最短手数しか示していないので、実際の手順や、どのような考え方を用いたかを示せるようにしたい。
 
   とりあえずは[戦略](./editorial/strategy.md)を元にヒューリスティック的なアルゴリズムを実装したい。
 
@@ -69,8 +83,11 @@
   特にアルゴリズム関連のテストが必要。
 
 - チュートリアル
+  
+  パズルの遊び方の説明を追加する。
 
 - 戦略、アルゴリズム等の解説、証明
+  草案は[ここ](./editorial/strategy.md)と[ここ](./editorial/koborebanasi.md)にあります。
 [![Deploy](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/deploy.yml/badge.svg)](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/deploy.yml)
 [![Build](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/build.yml/badge.svg)](https://github.com/pawap90/phaser3-ts-vite-eslint/actions/workflows/build.yml)
 
@@ -91,6 +108,7 @@ A modern Phaser 3 template: Phaser 3 + TypeScript + Vite + ESLint + GitHub Pages
   - [ざっくりとしたルール](#ざっくりとしたルール)
   - [ざっくりとしたルール２（わかる人向け）](#ざっくりとしたルール２わかる人向け)
   - [厳密なルール](#厳密なルール)
+- [その他機能](#その他機能)
 - [TODO（やりたいこと）](#todoやりたいこと)
 - [Dependencies](#dependencies)
 - [Quick start](#quick-start)
