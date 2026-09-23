@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 
 import { PreloaderScene } from './scenes/preloader.scene';
 import { GameScene } from './scenes/mainmenu.scene.ts';
-import { ClearScene } from './scenes/clear.scene';
+import { SolutionScene } from './scenes/solution.scene.ts';
 import { difficulties } from './scenes/difficulty/difficulties.ts';
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -19,7 +19,7 @@ const config: Phaser.Types.Core.GameConfig = {
   scale: {
     mode: Phaser.Scale.FIT,
   },
-  scene: [PreloaderScene, GameScene, ClearScene, ...difficulties],
+  scene: [PreloaderScene, GameScene, SolutionScene, ...difficulties],
   backgroundColor: '#21213B',
 };
 

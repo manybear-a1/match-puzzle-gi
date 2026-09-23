@@ -11,7 +11,10 @@ export class InteractiveGraph extends Graph {
   constructor(scene: Phaser.Scene, x: number, y: number, height: number, width: number, matrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0))) {
     super(scene, x, y, height, width, matrix);
 
-    // Add pointer event listeners
+    this.setupNodeInteractions();
+  }
+
+  private setupNodeInteractions(): void {
 
     for (const node of this.nodes) {
       node.on('dragstart', () => {
@@ -42,7 +45,6 @@ export class InteractiveGraph extends Graph {
           if (!isOverlapping) {
             node.setPosition(this.previousPosition?.x ?? node.x, this.previousPosition?.y ?? node.y);
           }
-
           this.selectedVertex = null;
           this.previousPosition = null;
 
@@ -51,7 +53,18 @@ export class InteractiveGraph extends Graph {
 
     }
   }
-  private swapVertices(v1: number, v2: number): void {
+
+  reset(matrix: number[][]): void {
+    this.setAdjacencyMatrix(matrix);
+    this.moved_count = 0;
+    this.setupNodeInteractions();
+  }
+
+  swapByIndex(v1: number, v2: number, animate = true): void {
+    this.swapVertices(v1, v2, animate);
+  }
+
+  private swapVertices(v1: number, v2: number, animate = true): void {
     if (v1 === v2) return;
     // Swap the connections in the adjacency matrix
     for (let i = 0; i < this.nodes.length; i++) {
@@ -79,6 +92,13 @@ export class InteractiveGraph extends Graph {
     const y2 = this.nodes[v2].y;
     this.moved_count++;
     this.emit('swap', { v1, v2 });
+    if (!animate) {
+      this.nodes[v1].setPosition(x2, y2);
+      this.nodes[v2].setPosition(x1, y1);
+      this.emit('swapComplete', { v1, v2 });
+      return;
+    }
+
     // this.nodes[v1].setPosition(this.nodes[v2].x, this.nodes[v2].y);
     // this.nodes[v2].setPosition(x, y);
     // Tween the nodes to their new positions
@@ -107,7 +127,7 @@ export class InteractiveGraph extends Graph {
         x: { value: 0 },
         y: { value: 0 }
       },
-      duration: 300,
+      duration: 250,
     });
   }
 

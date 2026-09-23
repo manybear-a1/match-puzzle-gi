@@ -100,6 +100,13 @@ export class Graph extends Phaser.GameObjects.Container {
     }
     return matrix;
   }
+
+  playBurningEffect(): void {
+    for (const node of this.nodes) {
+      node.burn();
+    }
+  }
+
   // relative positioning of nodes based on the graph's position and size
   setNodePosition(i: number, x: number, y: number): void {
     if (i < 0 || i >= this.nodes.length) {
