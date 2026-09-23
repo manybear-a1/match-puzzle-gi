@@ -7,6 +7,7 @@ export class InteractiveGraph extends Graph {
   private selectedVertex: Node | null = null;
   private previousPosition: { x: number; y: number; } | null = null;
   private moved_count: number = 0;
+  private swapTween: Phaser.Tweens.Tween | null = null;
 
   constructor(scene: Phaser.Scene, x: number, y: number, height: number, width: number, matrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0))) {
     super(scene, x, y, height, width, matrix);
@@ -67,6 +68,10 @@ export class InteractiveGraph extends Graph {
 
   private swapVertices(v1: number, v2: number, animate = true, respectFixed = true): void {
     if (v1 === v2 || (respectFixed && (this.nodes[v1].isFixed() || this.nodes[v2].isFixed()))) return;
+    if (this.swapTween) {
+      this.swapTween.stop();
+    }
+    this.swapTween = null;
     // Swap the connections in the adjacency matrix
     for (let i = 0; i < this.nodes.length; i++) {
       if (i === v1 || i === v2) continue;
@@ -103,7 +108,7 @@ export class InteractiveGraph extends Graph {
     // this.nodes[v1].setPosition(this.nodes[v2].x, this.nodes[v2].y);
     // this.nodes[v2].setPosition(x, y);
     // Tween the nodes to their new positions
-    this.scene.tweens.add({
+    this.swapTween = this.scene.tweens.add({
       targets: [this.nodes[v1], this.nodes[v2]],
       onUpdate: (tween, target) => {
         const progress = Phaser.Math.Easing.Expo.InOut(tween.progress);
