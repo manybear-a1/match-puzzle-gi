@@ -17,6 +17,7 @@ export class GameBase extends Scene {
     //console.log('Generated Matrix:', generatedMatrix);
     const shuffledMatrix = PuzzleGenerator.shuffleMatrix(generatedMatrix);
     const interactiveGraph = new InteractiveGraph(this, 0, 0, 640, 720, shuffledMatrix);
+    this.input.mouse?.disableContextMenu();
     //console.log('Shuffled Matrix:', shuffledMatrix);
     interactiveGraph.on('swapComplete', () => {
       if (PuzzleSolver.isSolved(interactiveGraph.getAdjacencyMatrix(), generatedMatrix)) {

@@ -18,6 +18,7 @@ export class InteractiveGraph extends Graph {
 
     for (const node of this.nodes) {
       node.on('dragstart', () => {
+        if (node.isFixed()) return;
         this.selectedVertex = node;
         this.previousPosition = { x: node.x, y: node.y };
         this.bringToTop(node);
@@ -32,7 +33,7 @@ export class InteractiveGraph extends Graph {
           let isOverlapping = false;
           // Check if the node is dropped on another node
           for (const targetNode of this.nodes) {
-            if (targetNode !== node && Phaser.Geom.Intersects.RectangleToRectangle(node.getBounds(), targetNode.getBounds())) {
+            if (!targetNode.isFixed() && targetNode !== node && Phaser.Geom.Intersects.RectangleToRectangle(node.getBounds(), targetNode.getBounds())) {
               node.setPosition(this.previousPosition?.x ?? node.x, this.previousPosition?.y ?? node.y);
               // Swap the two nodes
               const v1Index = this.nodes.indexOf(this.selectedVertex);
@@ -61,11 +62,11 @@ export class InteractiveGraph extends Graph {
   }
 
   swapByIndex(v1: number, v2: number, animate = true): void {
-    this.swapVertices(v1, v2, animate);
+    this.swapVertices(v1, v2, animate, false);
   }
 
-  private swapVertices(v1: number, v2: number, animate = true): void {
-    if (v1 === v2) return;
+  private swapVertices(v1: number, v2: number, animate = true, respectFixed = true): void {
+    if (v1 === v2 || (respectFixed && (this.nodes[v1].isFixed() || this.nodes[v2].isFixed()))) return;
     // Swap the connections in the adjacency matrix
     for (let i = 0; i < this.nodes.length; i++) {
       if (i === v1 || i === v2) continue;

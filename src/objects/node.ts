@@ -6,6 +6,7 @@ export class Node extends Phaser.GameObjects.Container {
   private _radius: number;
   private matches: Match[] = [];
   private burning = false;
+  private fixed = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, radius: number = 15) {
     super(scene, x, y);
@@ -35,6 +36,12 @@ export class Node extends Phaser.GameObjects.Container {
     this.setInteractive({
       hitArea: this.circle.input?.hitArea,
       draggable: true,
+    });
+    this.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (pointer.rightButtonDown()) {
+        pointer.event.preventDefault();
+        this.setFixed(!this.fixed);
+      }
     });
     this.on('pointerover', () => {
       this.setScale(1.2);
@@ -79,11 +86,27 @@ export class Node extends Phaser.GameObjects.Container {
   }
   unhighlight(): void {
     if (!this.burning) {
-      this.circle.setStrokeStyle(1, 0x000000);
+      this.circle.setStrokeStyle(this.fixed ? 3 : 1, this.fixed ? 0x0066ff : 0x000000);
     }
     else {
       this.circle.setStrokeStyle(3, 0xffd000);
     }
+  }
+
+  setFixed(fixed: boolean): void {
+    this.fixed = fixed;
+    if (fixed) {
+      this.circle.setFillStyle(0x66ccff, 0.9);
+      this.circle.setStrokeStyle(3, 0x0066ff);
+    }
+    else if (!this.burning) {
+      this.circle.setFillStyle(0xffffff, 0.75);
+      this.circle.setStrokeStyle(1, 0x000000);
+    }
+  }
+
+  isFixed(): boolean {
+    return this.fixed;
   }
 
   burn(): void {
