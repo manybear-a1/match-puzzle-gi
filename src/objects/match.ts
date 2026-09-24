@@ -36,6 +36,7 @@ export class Match extends Phaser.GameObjects.Graphics {
       this.endNode?.unhighlight();
     });
     this.draw();
+    this.setInteractive(this.hitArea, this.isPointOnCurrentStick.bind(this));
   }
   connectNodes(startNode: Node, endNode: Node): void {
     this.startNode = startNode;
@@ -60,29 +61,13 @@ export class Match extends Phaser.GameObjects.Graphics {
   draw(): void {
     this.clear();
 
-    // Calculate angle of the match
-    const angle = Math.atan2(this.endY - this.startY, this.endX - this.startX);
-
-    // Calculate length and adjusted length of the match
-    const length = Phaser.Math.Distance.Between(this.startX, this.startY, this.endX, this.endY);
-    const adjustedLength = length - this.shortenBy;
-
-    // Calculate midpoint
-    const midX = (this.startX + this.endX) / 2;
-    const midY = (this.startY + this.endY) / 2;
-
-    // Calculate adjusted start and end points
-    const adjStartX = midX - Math.cos(angle) * (adjustedLength / 2);
-    const adjStartY = midY - Math.sin(angle) * (adjustedLength / 2);
-    const adjEndX = midX + Math.cos(angle) * (adjustedLength / 2);
-    const adjEndY = midY + Math.sin(angle) * (adjustedLength / 2);
+    const { adjStartX, adjStartY, adjEndX, adjEndY } = this.getAdjustedEndpoints();
     const hitPadding = 8;
     const hitX = Math.min(adjStartX, adjEndX) - hitPadding;
     const hitY = Math.min(adjStartY, adjEndY) - hitPadding;
     const hitWidth = Math.abs(adjEndX - adjStartX) + hitPadding * 2;
     const hitHeight = Math.abs(adjEndY - adjStartY) + hitPadding * 2;
     this.hitArea.setTo(hitX, hitY, hitWidth, hitHeight);
-    this.setInteractive(this.hitArea, (_hitArea, x, y) => this.isPointOnStick(x, y, adjStartX, adjStartY, adjEndX, adjEndY));
     if (this.highlighted) {
       this.lineStyle(this.stickWidth + 5, this.highlightColor);
       this.lineBetween(adjStartX, adjStartY, adjEndX, adjEndY);
@@ -104,19 +89,34 @@ export class Match extends Phaser.GameObjects.Graphics {
 
   }
 
-  private isPointOnStick(x: number, y: number, startX: number, startY: number, endX: number, endY: number): boolean {
-    const segmentX = endX - startX;
-    const segmentY = endY - startY;
+  private getAdjustedEndpoints(): { adjStartX: number; adjStartY: number; adjEndX: number; adjEndY: number; } {
+    const angle = Math.atan2(this.endY - this.startY, this.endX - this.startX);
+    const length = Phaser.Math.Distance.Between(this.startX, this.startY, this.endX, this.endY);
+    const adjustedLength = length - this.shortenBy;
+    const midX = (this.startX + this.endX) / 2;
+    const midY = (this.startY + this.endY) / 2;
+    return {
+      adjStartX: midX - Math.cos(angle) * (adjustedLength / 2),
+      adjStartY: midY - Math.sin(angle) * (adjustedLength / 2),
+      adjEndX: midX + Math.cos(angle) * (adjustedLength / 2),
+      adjEndY: midY + Math.sin(angle) * (adjustedLength / 2),
+    };
+  }
+
+  private isPointOnCurrentStick(_hitArea: Phaser.Geom.Rectangle, x: number, y: number): boolean {
+    const { adjStartX, adjStartY, adjEndX, adjEndY } = this.getAdjustedEndpoints();
+    const segmentX = adjEndX - adjStartX;
+    const segmentY = adjEndY - adjStartY;
     const segmentLengthSquared = segmentX * segmentX + segmentY * segmentY;
     if (segmentLengthSquared === 0) return false;
     // Project point onto the line segment, clamping to the segment
     // a dot b / |a|^2 = |b| cos (theta) / |a| ( a is the segment vector, b is the vector from start to point)
     // cos (theta) is not negative if and only if theta is between -90 and 90 degrees (inclusive), which means the projection is on the segment.
-    const projection = Math.max(0, Math.min(1, ((x - startX) * segmentX + (y - startY) * segmentY) / segmentLengthSquared));
+    const projection = Math.max(0, Math.min(1, ((x - adjStartX) * segmentX + (y - adjStartY) * segmentY) / segmentLengthSquared));
     // Find the nearest point on the segment
     // (|b| cos (theta) / |a|) * a = |b| cos (theta) * e (e is the unit vector of a)
-    const nearestX = startX + projection * segmentX;
-    const nearestY = startY + projection * segmentY;
+    const nearestX = adjStartX + projection * segmentX;
+    const nearestY = adjStartY + projection * segmentY;
     const distanceX = x - nearestX;
     const distanceY = y - nearestY;
     return distanceX * distanceX + distanceY * distanceY <= 10 * 10;
