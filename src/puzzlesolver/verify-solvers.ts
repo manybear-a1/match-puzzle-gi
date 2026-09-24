@@ -52,13 +52,13 @@ function verifyCase(size: number, caseNumber: number): void {
   const targetMatrix = createRandomMatrix(size);
   const startMatrix = shuffleMatrix(targetMatrix);
   const caseName = `size=${ size }, case=${ caseNumber }`;
-  const brutePath = BruteForceSolver.solvePath(startMatrix, targetMatrix);
-  const smartPath = SmartBruteForceSolver.solvePath(startMatrix, targetMatrix);
+  const bruteResult = BruteForceSolver.solvePath(startMatrix, targetMatrix);
+  const smartResult = SmartBruteForceSolver.solvePath(startMatrix, targetMatrix);
 
-  assertPathIsSolution(startMatrix, targetMatrix, brutePath, 'BruteForceSolver', caseName);
-  assertPathIsSolution(startMatrix, targetMatrix, smartPath, 'SmartBruteForceSolver', caseName);
-  if (brutePath.length !== smartPath.length) {
-    throw new Error(`${ caseName }: shortest path mismatch, brute=${ brutePath.length }, smart=${ smartPath.length }.`);
+  assertPathIsSolution(startMatrix, targetMatrix, bruteResult.path, 'BruteForceSolver', caseName);
+  assertPathIsSolution(startMatrix, targetMatrix, smartResult.path, 'SmartBruteForceSolver', caseName);
+  if (bruteResult.path.length !== smartResult.path.length) {
+    throw new Error(`${ caseName }: shortest path mismatch, brute=${ bruteResult.path.length }, smart=${ smartResult.path.length }.`);
   }
 }
 

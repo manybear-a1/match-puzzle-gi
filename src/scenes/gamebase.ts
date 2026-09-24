@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 import { Graph } from '../objects/graph.ts';
 import { InteractiveGraph } from '../objects/interactivegraph.ts';
 import { PuzzleSolver } from '../puzzlesolver/puzzlesolver.ts';
-import { SmartBruteForceSolver } from '../puzzlesolver/smart-bruteforce.ts';
+import { MetaSolver } from '../puzzlesolver/meta.ts';
 import { PuzzleGenerator } from '../puzzlegenerator/puzzlegenerator.ts';
 export class GameBase extends Scene {
   private nodeCount: number;
@@ -38,61 +38,71 @@ export class GameBase extends Scene {
 
 
     // Calculate the minimum moves after a short delay to ensure the graph is fully initialized
-    if (this.nodeCount <= 9) {
-      this.time.delayedCall(100, () => {
-        const solutionPath = SmartBruteForceSolver.solvePath(shuffledMatrix, generatedMatrix);
-        const minimum_moves = solutionPath.length;
-        this.add.text(20, 50, `Minimum Moves: ${ minimum_moves }`, { fontSize: '24px', color: '#ffffff' });
-        const scoreText = this.add.text(20, 80, 'Score: 100', { fontSize: '24px', color: '#ffffff' });
-        interactiveGraph.on('swap', () => {
-          scoreText.setText(`Score: ${ minimum_moves / interactiveGraph.getMovedCount() * 100 }`);
-        });
+    this.time.delayedCall(100, () => {
+      const solutionResult = MetaSolver.solvePath(shuffledMatrix, generatedMatrix);
+      if (!solutionResult.isSolved && solutionResult.path.length === 0) {
+        return;
+      }
+      const minimum_moves = solutionResult.minimumMoves;
+      this.add.text(20, 50, `Minimum Moves: ${ minimum_moves }`, { fontSize: '24px', color: '#ffffff' });
+      const scoreText = this.add.text(20, 80, 'Score: 100', { fontSize: '24px', color: '#ffffff' });
+      interactiveGraph.on('swap', () => {
+        scoreText.setText(`Score: ${ minimum_moves / interactiveGraph.getMovedCount() * 100 }`);
+      });
 
-        const solutionButton = this.add.text(1260, 20, 'Show Shortest Solution', {
-          fontSize: '20px',
-          color: '#ffffff',
-          backgroundColor: '#2d6cdf',
-          padding: { x: 10, y: 8 },
-        }).setInteractive({ useHandCursor: true }).setOrigin(1, 0);
-        const nextStepButton = this.add.text(1260, 65, 'Next Shortest Step', {
-          fontSize: '20px',
-          color: '#ffffff',
-          backgroundColor: '#2d6cdf',
-          padding: { x: 10, y: 8 },
-        }).setInteractive({ useHandCursor: true }).setOrigin(1, 0);
-        const solutionText = this.add.text(1260, 120, '', {
-          fontSize: '18px',
-          color: '#ffffff',
-          wordWrap: { width: 300 },
-        }).setOrigin(1, 0);
-        solutionButton.on('pointerdown', () => {
-          if (solutionPath.length === 0) {
-            solutionText.setText('Already solved.');
-            return;
-          }
+      const solutionButton = this.add.text(1260, 20, 'Show Shortest Solution', {
+        fontSize: '20px',
+        color: '#ffffff',
+        backgroundColor: '#2d6cdf',
+        padding: { x: 10, y: 8 },
+      }).setInteractive({ useHandCursor: true }).setOrigin(1, 0);
+      const nextStepButton = this.add.text(1260, 65, 'Next Shortest Step', {
+        fontSize: '20px',
+        color: '#ffffff',
+        backgroundColor: '#2d6cdf',
+        padding: { x: 10, y: 8 },
+      }).setInteractive({ useHandCursor: true }).setOrigin(1, 0);
+      const solutionText = this.add.text(1260, 120, '', {
+        fontSize: '18px',
+        color: '#ffffff',
+        wordWrap: { width: 300 },
+      }).setOrigin(1, 0);
+      solutionButton.on('pointerdown', () => {
+        if (PuzzleSolver.isSolved(interactiveGraph.getAdjacencyMatrix(), generatedMatrix)) {
+          solutionText.setText('Already solved.');
+          return;
+        }
 
-          this.scene.start('solution', {
-            startMatrix: shuffledMatrix,
-            targetMatrix: generatedMatrix,
-            solutionPath,
-          });
-        });
-        nextStepButton.on('pointerdown', () => {
-          const currentPath = SmartBruteForceSolver.solvePath(interactiveGraph.getAdjacencyMatrix(), generatedMatrix);
-          if (currentPath.length === 0) {
-            solutionText.setText('Already solved.');
-            return;
-          }
-
-          nextStepButton.disableInteractive();
-          const [v1, v2] = currentPath[0];
-          solutionText.setText(`Next: ${ v1 } <-> ${ v2 }`);
-          interactiveGraph.swapByIndex(v1 - 1, v2 - 1);
-          this.time.delayedCall(350, () => {
-            nextStepButton.setInteractive({ useHandCursor: true });
-          });
+        this.scene.start('solution', {
+          startMatrix: shuffledMatrix,
+          targetMatrix: generatedMatrix,
+          solutionResult,
         });
       });
-    }
+      nextStepButton.on('pointerdown', () => {
+        const currentResult = MetaSolver.solvePath(interactiveGraph.getAdjacencyMatrix(), generatedMatrix);
+        if (PuzzleSolver.isSolved(interactiveGraph.getAdjacencyMatrix(), generatedMatrix)) {
+          solutionText.setText('Already solved.');
+          return;
+        }
+        if(currentResult.path.length === 0) {
+          solutionText.setText('No solution found.');
+          return;
+        }
+
+        nextStepButton.disableInteractive();
+        let [v1, v2] = currentResult.path[0];
+        while(v1 === v2 && currentResult.path.length > 1) {
+          currentResult.path.shift();
+          [v1, v2] = currentResult.path[0];
+        }
+
+        solutionText.setText(`Next: ${ v1 } <-> ${ v2 }`);
+        interactiveGraph.swapByIndex(v1 - 1, v2 - 1);
+        this.time.delayedCall(350, () => {
+          nextStepButton.setInteractive({ useHandCursor: true });
+        });
+      });
+    });
   }
 }

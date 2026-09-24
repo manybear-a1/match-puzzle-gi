@@ -120,6 +120,13 @@ export class Graph extends Phaser.GameObjects.Container {
     //this.nodes[i].setPosition(x, y);
     this.nodes[i].setPosition(this.width * x, this.height * y);
   }
+  setFixedNode(i: number, fixed: boolean): void {
+    if (i < 0 || i >= this.nodes.length) {
+      // console.warn('Invalid node index');
+      return;
+    }
+    this.nodes[i].setFixed(fixed);
+  }
   destroyNodes(): void {
     for (const node of this.nodes) {
       node.destroy();

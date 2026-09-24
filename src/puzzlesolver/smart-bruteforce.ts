@@ -1,15 +1,16 @@
 import { Queue } from './queue.ts';
-import { PuzzleSolver } from './puzzlesolver.ts';
-
+import { PuzzleSolver, SolverResult } from './puzzlesolver.ts';
+// optimized brute-force solver that uses degree information to prune the search space
+// Guaranteed to find the shortest path if it exists, but still slow for large graphs (size > 9).
 export class SmartBruteForceSolver extends PuzzleSolver {
   private static getDegree(matrix: number[][], vertex: number): number {
     return matrix[vertex].reduce((degree, connection) => degree + connection, 0);
   }
 
-  static solvePath(startMatrix: number[][], targetMatrix: number[][]): number[][] {
+  static solvePath(startMatrix: number[][], targetMatrix: number[][]): SolverResult {
     const size = startMatrix.length;
     if (size > 9) {
-      return [];
+      return { isSolved: false, path: [], minimumMoves: 0 };
     }
 
     const queue: Queue<string> = new Queue<string>();
@@ -37,7 +38,7 @@ export class SmartBruteForceSolver extends PuzzleSolver {
           path.unshift(parent.swap);
           state = parent.state;
         }
-        return path;
+        return { isSolved: true, path, minimumMoves: path.length };
       }
 
       for (let i = 0; i < size; i++) {
@@ -66,11 +67,6 @@ export class SmartBruteForceSolver extends PuzzleSolver {
       }
     }
 
-    return [];
-  }
-
-  static solve(startMatrix: number[][], targetMatrix: number[][]): number {
-    const path = this.solvePath(startMatrix, targetMatrix);
-    return path.length > 0 || this.isSolved(startMatrix, targetMatrix) ? path.length : -1;
+    return { isSolved: false, path: [], minimumMoves: 0 };
   }
 }

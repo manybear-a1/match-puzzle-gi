@@ -1,11 +1,11 @@
 import { Queue } from './queue.ts';
-import { PuzzleSolver } from './puzzlesolver.ts';
+import { PuzzleSolver, SolverResult } from './puzzlesolver.ts';
 
 export class BruteForceSolver extends PuzzleSolver {
-  static solvePath(startMatrix: number[][], targetMatrix: number[][]): number[][] {
+  static solvePath(startMatrix: number[][], targetMatrix: number[][]): SolverResult {
     const size = startMatrix.length;
     if (size > 9) {
-      return [];
+      return { isSolved: false, path: [], minimumMoves: 0 };
     }
 
     const queue: Queue<string> = new Queue<string>();
@@ -33,7 +33,7 @@ export class BruteForceSolver extends PuzzleSolver {
           path.unshift(parent.swap);
           state = parent.state;
         }
-        return path;
+        return { isSolved: true, path, minimumMoves: path.length };
       }
 
       for (let i = 0; i < size; i++) {
@@ -53,11 +53,6 @@ export class BruteForceSolver extends PuzzleSolver {
       }
     }
 
-    return [];
-  }
-
-  static solve(startMatrix: number[][], targetMatrix: number[][]): number {
-    const path = this.solvePath(startMatrix, targetMatrix);
-    return path.length > 0 || this.isSolved(startMatrix, targetMatrix) ? path.length : -1;
+    return { isSolved: false, path: [], minimumMoves: 0 };
   }
 }

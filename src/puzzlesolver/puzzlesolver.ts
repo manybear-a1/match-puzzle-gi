@@ -1,3 +1,11 @@
+export interface SolverResult {
+  isSolved: boolean;
+  path: number[][];
+  minimumMoves: number;
+  description?: string[];
+  fixedVertices?: number[];
+}
+
 export abstract class PuzzleSolver {
   //abstract static solve_path(startMatrix: number[][], targetMatrix: number[][]): number[][];
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
