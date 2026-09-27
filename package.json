@@ -10,6 +10,8 @@
     "prebuild": "tsc && npm run lint",
     "build": "vite build",
     "preview": "vite preview",
+    "typst:compile": "typst compile editorial/koborebanasi.typ .tmp/koborebanasi.pdf",
+    "typst:watch": "typst watch editorial/koborebanasi.typ .tmp/koborebanasi.pdf",
     "verify:solvers": "esbuild src/puzzlesolver/verify-solvers.ts --bundle --platform=node --outfile=.tmp/verify-solvers.mjs && node .tmp/verify-solvers.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
