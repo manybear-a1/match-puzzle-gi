@@ -7,10 +7,10 @@ export default defineConfig({
   assetsInclude: ['**/*.md'],
   build: {
     rollupOptions: {
-      input:{
+      input: {
         'index': resolve(__dirname, 'index.html'),
-        'graphisomorphism': resolve(__dirname, 'src/games/graphisomorphism/main.ts'),
-        'eulercircuit': resolve(__dirname, 'src/games/eulercircuit/main.ts'),
+        'src/games/graphisomorphism/index': resolve(__dirname, 'src/games/graphisomorphism/index.html'),
+        'src/games/eulercircuit/index': resolve(__dirname, 'src/games/eulercircuit/index.html'),
       }
     }
   }
