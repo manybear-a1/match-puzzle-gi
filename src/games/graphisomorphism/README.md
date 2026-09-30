@@ -1,6 +1,6 @@
 # マッチ棒パズルGI
 
-[遊ぶ](https://manybear-a1.github.io/match-puzzle-gi/)
+[遊ぶ](https://manybear-a1.github.io/match-puzzle-gi/src/games/graphisomorphism/index.html)
 
 マッチ棒パズル（の変種）です。マッチ棒そのものを動かす代わりにマッチ棒がくっついている頂点を動かします。
 # ルール
