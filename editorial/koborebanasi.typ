@@ -1,6 +1,7 @@
 #set text(lang: "ja")
 #show link: set text(fill: blue)
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
+#import "@preview/cetz:0.3.4": canvas, draw
 = 元ネタ
 
 グラフ同型判定問題（#link("https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%95%E5%90%8C%E5%9E%8B")[Wikipedia(日本語)]、#link("https://en.wikipedia.org/wiki/Graph_isomorphism_problem")[Wikipedia(English)]）
@@ -26,17 +27,29 @@
 
 例として解の一つが3、2、1、6、7、5、4、9、8であったとき、この置換を先頭から作る。
 
-最初の置換は1、2、3、4、5、6、7、8、9である。先頭を3にしたいので1と3を交換する。
+#canvas({
+  import draw: *
+  let states = (
+    ("", "1  2  3  4  5  6  7  8  9"),
+    ("1 と 3", "3  2  1  4  5  6  7  8  9"),
+    ("4 と 6", "3  2  1  6  5  4  7  8  9"),
+    ("5 と 7", "3  2  1  6  7  4  5  8  9"),
+    ("4 と 5", "3  2  1  6  7  5  4  8  9"),
+    ("8 と 9", "3  2  1  6  7  5  4  9  8"),
+  )
+  for (index, state) in states.enumerate() {
+    let y = -index * 1.2
+    content((0.4, y), box(stroke: 0.8pt + gray, inset: 0.25em)[#state.at(1)])
+    if (state.at(0) != "") {
+      content((3.6, y + 0.7), text(size: 0.8em, fill: rgb("555555"))[#state.at(0)を互換])
+    }
+    if index < states.len() - 1 {
+      line((0.4, y - 0.35), (0.4, y - 0.85), mark: (end: "stealth"))
+    }
+  }
+})
 
-置換は3、2、1、4、5、6、7、8、9になる。二番目と三番目はすでにそろっている。次に四番目を6にしたいので4と6を交換する。
-
-置換は3、2、1、6、5、4、7、8、9になる。五番目を7にしたいので5と7を交換する。
-
-置換は3、2、1、6、7、4、5、8、9になる。六番目を5にしたいので4と5を交換する。
-
-置換は3、2、1、6、7、5、4、8、9になる。七番目はすでにそろっている。次に八番目を9にしたいので8と9を交換する。
-
-置換は3、2、1、6、7、5、4、9、8になる。合成した互換の数は5個。
+この例では、先頭から順に位置を確定させ、使用した互換は5個である。
 
 このように先頭から一つずつそろえることで、一つ揃えるたびに最大でも一つしか互換が必要ないことから、最短手数が9手以下になることがいえる。（ちなみに、最後の一回分は自動的にそろうので最短手数は8手以下も証明できる。）
 
