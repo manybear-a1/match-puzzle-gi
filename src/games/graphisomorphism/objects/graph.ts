@@ -100,7 +100,9 @@ export class Graph extends Phaser.GameObjects.Container {
     }
     return matrix;
   }
-
+  setDegreeVisible(visible: boolean): void {
+    for (const node of this.nodes) node.setDegreeVisible(visible);
+  }
   playBurningEffect(): void {
     for (const node of this.nodes) {
       node.burn();

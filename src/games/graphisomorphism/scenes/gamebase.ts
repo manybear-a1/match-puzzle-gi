@@ -6,6 +6,7 @@ import { MetaSolver } from '../puzzlesolver/meta.ts';
 import { PuzzleGenerator } from '../puzzlegenerator/puzzlegenerator.ts';
 export class GameBase extends Scene {
   private nodeCount: number;
+  private degreeVisible: boolean = false;
   constructor(name: string, nodeCount: number) {
     super(name);
     this.nodeCount = nodeCount;
@@ -14,6 +15,7 @@ export class GameBase extends Scene {
   create(): void {
     const generatedMatrix: number[][] = PuzzleGenerator.generateRandomMatrix(this.nodeCount);
     const targetGraph = new Graph(this, 640, 0, 640, 720, generatedMatrix);
+
 
     //console.log('Generated Matrix:', generatedMatrix);
     const shuffledMatrix = PuzzleGenerator.shuffleMatrix(generatedMatrix);
@@ -35,7 +37,18 @@ export class GameBase extends Scene {
     interactiveGraph.on('swap', () => {
       movesText.setText(`Moves Made: ${ interactiveGraph.getMovedCount() }`);
     });
-
+    const degreeButton = this.add.text(250, 20, '次数表示: OFF', {
+      color: '#ffffff', backgroundColor: '#3b4775', fontSize: '16px',
+      padding: { left: 12, right: 12, top: 9, bottom: 9 },
+    }).setInteractive({ useHandCursor: true });
+    targetGraph.setDegreeVisible(this.degreeVisible);
+    interactiveGraph.setDegreeVisible(this.degreeVisible);
+    degreeButton.on('pointerdown', () => {
+      this.degreeVisible = !this.degreeVisible;
+      targetGraph.setDegreeVisible(this.degreeVisible);
+      interactiveGraph.setDegreeVisible(this.degreeVisible);
+      degreeButton.setText(`次数表示: ${ this.degreeVisible ? 'ON' : 'OFF' }`);
+    });
 
     // Calculate the minimum moves after a short delay to ensure the graph is fully initialized
     this.time.delayedCall(100, () => {
@@ -56,13 +69,13 @@ export class GameBase extends Scene {
         backgroundColor: '#2d6cdf',
         padding: { x: 10, y: 8 },
       }).setInteractive({ useHandCursor: true }).setOrigin(1, 0);
-      const nextStepButton = this.add.text(1260, 65, 'Next Shortest Step', {
+      const nextStepButton = this.add.text(960, 20, 'Next Shortest Step', {
         fontSize: '20px',
         color: '#ffffff',
         backgroundColor: '#2d6cdf',
         padding: { x: 10, y: 8 },
       }).setInteractive({ useHandCursor: true }).setOrigin(1, 0);
-      const solutionText = this.add.text(1260, 120, '', {
+      const solutionText = this.add.text(1260, 60, '', {
         fontSize: '18px',
         color: '#ffffff',
         wordWrap: { width: 300 },

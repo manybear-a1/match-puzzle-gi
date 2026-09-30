@@ -72,6 +72,9 @@ export class Node extends Phaser.GameObjects.Container {
   getDegree(): number {
     return this.matches.length / 2;
   }
+  setDegreeVisible(visible: boolean): void {
+    this.degreeText.setVisible(visible);
+  }
 
   setRadius(radius: number): void {
     this._radius = radius;
