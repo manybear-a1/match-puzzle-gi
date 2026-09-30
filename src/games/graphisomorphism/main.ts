@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 
-import { PreloaderScene } from './scenes/preloader.scene';
+import { PreloaderScene } from './scenes/preloader.scene.ts';
 import { GameScene } from './scenes/mainmenu.scene.ts';
 import { SolutionScene } from './scenes/solution.scene.ts';
 import { difficulties } from './scenes/difficulty/difficulties.ts';
