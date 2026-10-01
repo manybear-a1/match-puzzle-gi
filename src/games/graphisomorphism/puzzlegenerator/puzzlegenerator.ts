@@ -8,6 +8,19 @@ export class PuzzleGenerator {
         matrix[j][i] = matrix[i][j]; // Ensure symmetry
       }
     }
+    let hasEdges = false;
+    for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size; j++) {
+        if (matrix[i][j] === 1) {
+          hasEdges = true;
+          break;
+        }
+      }
+      if (hasEdges) break;
+    }
+    if (!hasEdges) {
+      return this.generateRandomMatrix(size); // Regenerate if no edges
+    }
     return matrix;
   }
   static shuffleMatrix(matrix: number[][]): number[][] {

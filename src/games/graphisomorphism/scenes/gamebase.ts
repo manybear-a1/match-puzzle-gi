@@ -18,7 +18,10 @@ export class GameBase extends Scene {
 
 
     //console.log('Generated Matrix:', generatedMatrix);
-    const shuffledMatrix = PuzzleGenerator.shuffleMatrix(generatedMatrix);
+    let shuffledMatrix = PuzzleGenerator.shuffleMatrix(generatedMatrix);
+    while (PuzzleSolver.isSolved(shuffledMatrix, generatedMatrix)) {
+      shuffledMatrix = PuzzleGenerator.shuffleMatrix(generatedMatrix);
+    }
     const interactiveGraph = new InteractiveGraph(this, 0, 0, 640, 720, shuffledMatrix);
     this.input.mouse?.disableContextMenu();
     //console.log('Shuffled Matrix:', shuffledMatrix);
@@ -98,14 +101,14 @@ export class GameBase extends Scene {
           solutionText.setText('Already solved.');
           return;
         }
-        if(currentResult.path.length === 0) {
+        if (currentResult.path.length === 0) {
           solutionText.setText('No solution found.');
           return;
         }
 
         nextStepButton.disableInteractive();
         let [v1, v2] = currentResult.path[0];
-        while(v1 === v2 && currentResult.path.length > 1) {
+        while (v1 === v2 && currentResult.path.length > 1) {
           currentResult.path.shift();
           [v1, v2] = currentResult.path[0];
         }
