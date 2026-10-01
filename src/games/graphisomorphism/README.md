@@ -76,7 +76,7 @@
 
   <video width="50%" src="./img/solution.mp4" controls></video>
 
-  このパズルに備わっているパズルソルバーは[戦略](./editorial/strategy.md)に基づいて実装されている。
+  このパズルに備わっているパズルソルバーは[戦略](./editorial/strategy.pdf)に基づいて実装されている。
 
 # TODO（やりたいこと）
 
