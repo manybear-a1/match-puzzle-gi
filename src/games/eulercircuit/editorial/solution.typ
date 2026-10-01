@@ -1,3 +1,4 @@
+#show link: set text(fill: blue)
 = 結論
 先手必勝
 
@@ -35,6 +36,7 @@
 
 
 = 補足
-このゲームは一筆書きができるかどうかを判定、構築するアルゴリズムから着想を得ている。#link("Hierholzer's algorithm", "https://en.wikipedia.org/wiki/Eulerian_path#:~:text=Hierholzer%27s%20algorithm")
+このゲームは一筆書きができるかどうかを判定、構築するアルゴリズムから着想を得ている。#link("https://en.wikipedia.org/wiki/Eulerian_path#:~:text=Hierholzer%27s%20algorithm", "Hierholzer's algorithm")
 
-グラフをサイクルに分解すること自体は未解決問題だそう。#link("Cycle Decomposition Problem", "https://en.wikipedia.org/wiki/Cycle_decomposition_(graph_theory)")
+グラフを最小/最大の数のサイクルに分解すること自体は未解決問題だそう。#link("https://en.wikipedia.org/wiki/Cycle_decomposition_(graph_theory)", "Cycle Decomposition Problem")
+今回は適当な数に分解するだけでよいので、簡単なDFSのアルゴリズムで十分である。

@@ -10,8 +10,8 @@
     "prebuild": "tsc && npm run lint",
     "build": "vite build",
     "preview": "vite preview",
-    "typst:compile": "typst compile editorial/koborebanasi.typ .tmp/koborebanasi.pdf",
-    "typst:watch": "typst watch editorial/koborebanasi.typ .tmp/koborebanasi.pdf",
+    "typst:compile": "typst compile editorial/strategy.typ .tmp/strategy.pdf",
+    "typst:watch": "typst watch editorial/strategy.typ .tmp/strategy.pdf",
     "verify:solvers": "esbuild src/puzzlesolver/verify-solvers.ts --bundle --platform=node --outfile=.tmp/verify-solvers.mjs && node .tmp/verify-solvers.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -23,6 +23,7 @@
     "phaser": "^3.80.1",
     "typescript": "^5.2.2",
     "typescript-eslint": "^7.17.0",
-    "vite": "^5.3.4"
+    "vite": "^5.3.4",
+    "vite-multiple-assets": "^2.2.6"
   }
 }
