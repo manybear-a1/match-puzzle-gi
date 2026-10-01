@@ -99,4 +99,4 @@
 
 - 戦略、アルゴリズム等の解説、証明
   
-  草案は[ここ](./editorial/strategy.md)と[ここ](./editorial/koborebanasi.md)にあります。
+  草案は[ここ](./editorial/strategy.pdf)にあります。このPDFのソースは[ここ](./editorial/strategy.typ)にあります。
