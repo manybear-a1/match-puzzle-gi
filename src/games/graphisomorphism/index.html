@@ -12,13 +12,7 @@
   <script type="module" src="./main.ts"></script>
   <!-- <p>Minimum Movesは10で固定されています。(JavaScriptがProcessing比べて重く、処理が十分高速に実行されないため。)</p> -->
   <div id="game-container"></div>
-  <zero-md id="readme"></zero-md>
-  <script type="module">
-    // Resolve README.md as an asset URL via Vite and set zero-md src
-    import readmeUrl from './README.md?url';
-    const el = document.getElementById('readme');
-    if (el) el.setAttribute('src', readmeUrl);
-  </script>
+  <zero-md src="./README.md"></zero-md>
 </body>
 
 </html>
