@@ -7,6 +7,7 @@ import { PuzzleGenerator } from '../puzzlegenerator/puzzlegenerator.ts';
 export class GameBase extends Scene {
   private nodeCount: number;
   private degreeVisible: boolean = false;
+  private matchingEdgesVisible: boolean = false;
   constructor(name: string, nodeCount: number) {
     super(name);
     this.nodeCount = nodeCount;
@@ -24,8 +25,10 @@ export class GameBase extends Scene {
     }
     const interactiveGraph = new InteractiveGraph(this, 0, 0, 640, 720, shuffledMatrix);
     this.input.mouse?.disableContextMenu();
+    interactiveGraph.highlightMatchingEdges(generatedMatrix, this.matchingEdgesVisible);
     //console.log('Shuffled Matrix:', shuffledMatrix);
     interactiveGraph.on('swapComplete', () => {
+      interactiveGraph.highlightMatchingEdges(generatedMatrix, this.matchingEdgesVisible);
       if (PuzzleSolver.isSolved(interactiveGraph.getAdjacencyMatrix(), generatedMatrix)) {
         interactiveGraph.playBurningEffect();
         targetGraph.playBurningEffect();
@@ -51,6 +54,15 @@ export class GameBase extends Scene {
       targetGraph.setDegreeVisible(this.degreeVisible);
       interactiveGraph.setDegreeVisible(this.degreeVisible);
       degreeButton.setText(`次数表示: ${ this.degreeVisible ? 'ON' : 'OFF' }`);
+    });
+    const matchingEdgesButton = this.add.text(390, 20, '一致表示: OFF', {
+      color: '#ffffff', backgroundColor: '#3b4775', fontSize: '16px',
+      padding: { left: 12, right: 12, top: 9, bottom: 9 },
+    }).setInteractive({ useHandCursor: true });
+    matchingEdgesButton.on('pointerdown', () => {
+      this.matchingEdgesVisible = !this.matchingEdgesVisible;
+      interactiveGraph.highlightMatchingEdges(generatedMatrix, this.matchingEdgesVisible);
+      matchingEdgesButton.setText(`一致表示: ${ this.matchingEdgesVisible ? 'ON' : 'OFF' }`);
     });
 
     // Calculate the minimum moves after a short delay to ensure the graph is fully initialized

@@ -12,7 +12,9 @@ export class Match extends Phaser.GameObjects.Graphics {
   private shortenBy: number = 30; // Amount to shorten match to not overlap with nodes
 
   private highlighted: boolean = false;
+  private correctHighlighted: boolean = false;
   private highlightColor: number = 0x00ffff; // Blue color for highlight
+  private correctHighlightColor: number = 0x66ff66;
   private startNode: Node | null = null;
   private endNode: Node | null = null;
   private readonly hitArea = new Phaser.Geom.Rectangle();
@@ -68,6 +70,10 @@ export class Match extends Phaser.GameObjects.Graphics {
     const hitWidth = Math.abs(adjEndX - adjStartX) + hitPadding * 2;
     const hitHeight = Math.abs(adjEndY - adjStartY) + hitPadding * 2;
     this.hitArea.setTo(hitX, hitY, hitWidth, hitHeight);
+    if (this.correctHighlighted) {
+      this.lineStyle(this.stickWidth + 5, this.correctHighlightColor);
+      this.lineBetween(adjStartX, adjStartY, adjEndX, adjEndY);
+    }
     if (this.highlighted) {
       this.lineStyle(this.stickWidth + 5, this.highlightColor);
       this.lineBetween(adjStartX, adjStartY, adjEndX, adjEndY);
@@ -155,6 +161,11 @@ export class Match extends Phaser.GameObjects.Graphics {
   }
   setHighlighted(highlighted: boolean): void {
     this.highlighted = highlighted;
+    this.draw();
+  }
+
+  setCorrectHighlighted(highlighted: boolean): void {
+    this.correctHighlighted = highlighted;
     this.draw();
   }
 

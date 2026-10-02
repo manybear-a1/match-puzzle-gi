@@ -100,6 +100,16 @@ export class Graph extends Phaser.GameObjects.Container {
     }
     return matrix;
   }
+
+  highlightMatchingEdges(targetMatrix: number[][], enabled = true): void {
+    for (let i = 0; i < this.nodes.length; i++) {
+      for (let j = 0; j < this.nodes.length; j++) {
+        const match = this.matches[i][j];
+        match?.setCorrectHighlighted(enabled && this.getAdjacency(i, j) === targetMatrix[i][j]);
+      }
+    }
+  }
+
   setDegreeVisible(visible: boolean): void {
     for (const node of this.nodes) node.setDegreeVisible(visible);
   }
