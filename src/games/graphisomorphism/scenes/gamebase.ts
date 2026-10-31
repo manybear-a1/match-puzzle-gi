@@ -35,7 +35,12 @@ export class GameBase extends Scene {
       }
 
     });
-    this.add.text(640, 20, 'End Game', { fontSize: '24px', color: '#00ff00' }).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+    this.add.text(640, 20, 'End Game', {
+      fontSize: '20px',
+      color: '#ffffff',
+      backgroundColor: '#66aa66',
+      padding: { x: 10, y: 8 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
       this.scene.stop();
       this.scene.launch('game');
     }).setOrigin(0.5, 0);

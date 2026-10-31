@@ -26,10 +26,15 @@ export class SolutionScene extends Scene {
     const interactiveGraph = new InteractiveGraph(this, 0, 0, 640, 720, startMatrix);
     this.add.text(20, 20, 'Solution Viewer', { fontSize: '24px', color: '#ffffff' });
     const stepText = this.add.text(20, 50, 'Step 0', { fontSize: '20px', color: '#ffffff' });
-    this.add.text(640, 20, 'End Replay', { fontSize: '24px', color: '#00ff00' }).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+    this.add.text(640, 20, 'End Replay', {
+      fontSize: '20px',
+      color: '#ffffff',
+      backgroundColor: '#66aa66',
+      padding: { x: 10, y: 8 },
+    }).setOrigin(0.5, 0).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
       this.scene.stop();
       this.scene.launch('game');
-    }).setOrigin(0.5, 0);
+    });
     targetGraph.setDegreeVisible(this.degreeVisible);
     interactiveGraph.setDegreeVisible(this.degreeVisible);
     const degreeButton = this.add.text(250, 20, `次数表示: ${ this.degreeVisible ? 'ON' : 'OFF' }`, {
