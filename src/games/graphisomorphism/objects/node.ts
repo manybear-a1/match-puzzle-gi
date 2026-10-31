@@ -7,6 +7,7 @@ export class Node extends Phaser.GameObjects.Container {
   private matches: Match[] = [];
   private burning = false;
   private fixed = false;
+  private selected = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, radius: number = 15) {
     super(scene, x, y);
@@ -35,7 +36,6 @@ export class Node extends Phaser.GameObjects.Container {
     //this.setInteractive(this.circle?.input?.hitArea);
     this.setInteractive({
       hitArea: this.circle.input?.hitArea,
-      draggable: true,
     });
     this.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (pointer.rightButtonDown()) {
@@ -85,10 +85,31 @@ export class Node extends Phaser.GameObjects.Container {
     return this._radius;
   }
   highlight(color: number = 0xff0000): void {
+    if (this.fixed) {
+      this.circle.setStrokeStyle(3, 0x0066ff);
+      return;
+    }
+    if (this.selected) {
+      this.circle.setStrokeStyle(3, 0xffd166);
+      return;
+    }
     this.circle.setStrokeStyle(3, color);
   }
+  setSelected(selected: boolean): void {
+
+    if (selected) {
+      this.highlight(0xffd166);
+    }
+    else {
+      this.unhighlight();
+    }
+    this.selected = selected;
+  }
   unhighlight(): void {
-    if (!this.burning) {
+    if (this.selected) {
+      this.highlight(0xffd166);
+    }
+    else if (!this.burning) {
       this.circle.setStrokeStyle(this.fixed ? 3 : 1, this.fixed ? 0x0066ff : 0x000000);
     }
     else {

@@ -1,62 +1,79 @@
 import Phaser from 'phaser';
 import { Graph } from './graph';
 import { Node } from './node';
+import { Arrow } from './arraw';
 
 // InteractiveGraph extends Graph to add interactivity for swapping vertices
 export class InteractiveGraph extends Graph {
   private selectedVertex: Node | null = null;
-  private previousPosition: { x: number; y: number; } | null = null;
   private moved_count: number = 0;
   private swapTween: Phaser.Tweens.Tween | null = null;
+  private readonly arrow: Arrow;
 
   constructor(scene: Phaser.Scene, x: number, y: number, height: number, width: number, matrix: number[][] = Array(9).fill(0).map(() => Array(9).fill(0))) {
     super(scene, x, y, height, width, matrix);
 
+    this.arrow = new Arrow(scene);
+    scene.input.on('pointermove', this.updateArrow, this);
     this.setupNodeInteractions();
   }
 
   private setupNodeInteractions(): void {
 
     for (const node of this.nodes) {
-      node.on('dragstart', () => {
-        if (node.isFixed()) return;
-        this.selectedVertex = node;
-        this.previousPosition = { x: node.x, y: node.y };
-        this.bringToTop(node);
-      });
-      node.on('drag', (pointer: Phaser.Input.Pointer) => {
-        if (this.selectedVertex === node) {
-          node.setPosition(pointer.x, pointer.y);
+      node.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        if (!pointer.rightButtonDown()) {
+          this.selectVertex(node, pointer);
         }
       });
-      node.on('dragend', () => {
-        if (this.selectedVertex === node) {
-          let isOverlapping = false;
-          // Check if the node is dropped on another node
-          for (const targetNode of this.nodes) {
-            if (!targetNode.isFixed() && targetNode !== node && Phaser.Geom.Intersects.RectangleToRectangle(node.getBounds(), targetNode.getBounds())) {
-              node.setPosition(this.previousPosition?.x ?? node.x, this.previousPosition?.y ?? node.y);
-              // Swap the two nodes
-              const v1Index = this.nodes.indexOf(this.selectedVertex);
-              const v2Index = this.nodes.indexOf(targetNode);
-              this.swapVertices(v1Index, v2Index);
-              isOverlapping = true;
-              break;
-            }
-          }
-          if (!isOverlapping) {
-            node.setPosition(this.previousPosition?.x ?? node.x, this.previousPosition?.y ?? node.y);
-          }
-          this.selectedVertex = null;
-          this.previousPosition = null;
-
-        }
-      });
-
     }
   }
 
+  private selectVertex(node: Node, pointer: Phaser.Input.Pointer): void {
+    if (node.isFixed()) return;
+    if (this.selectedVertex && this.selectedVertex.isFixed()) {
+      this.selectedVertex.setSelected(false);
+      this.selectedVertex = null;
+    }
+    if (this.selectedVertex === null) {
+      this.selectedVertex = node;
+      node.setSelected(true);
+      this.updateArrow(pointer);
+      return;
+    }
+
+    if (this.selectedVertex === node) {
+      node.setSelected(false);
+      this.selectedVertex = null;
+      this.arrow.hide();
+      return;
+    }
+
+
+    const firstVertex = this.selectedVertex;
+    firstVertex.setSelected(false);
+    this.selectedVertex = null;
+    this.arrow.hide();
+
+    const firstIndex = this.nodes.indexOf(firstVertex);
+    const secondIndex = this.nodes.indexOf(node);
+    this.swapVertices(firstIndex, secondIndex);
+  }
+
+  private updateArrow(pointer: Phaser.Input.Pointer): void {
+    if (this.selectedVertex === null) return;
+
+    this.arrow.pointTo(
+      this.x + this.selectedVertex.x,
+      this.y + this.selectedVertex.y,
+      pointer.x,
+      pointer.y,
+    );
+  }
+
   reset(matrix: number[][]): void {
+    this.selectedVertex = null;
+    this.arrow.hide();
     this.setAdjacencyMatrix(matrix);
     this.moved_count = 0;
     this.setupNodeInteractions();
