@@ -14,8 +14,8 @@ export class SolutionScene extends Scene {
   constructor() {
     super('solution');
   }
-  private degreeVisible: boolean = false;
-  private matchingEdgesVisible: boolean = false;
+  private degreeVisible: boolean = true;
+  private matchingEdgesVisible: boolean = true;
   create(data: SolutionSceneData): void {
     const startMatrix = data.startMatrix;
     const targetMatrix = data.targetMatrix;
@@ -32,7 +32,7 @@ export class SolutionScene extends Scene {
     }).setOrigin(0.5, 0);
     targetGraph.setDegreeVisible(this.degreeVisible);
     interactiveGraph.setDegreeVisible(this.degreeVisible);
-    const degreeButton = this.add.text(250, 20, '次数表示: OFF', {
+    const degreeButton = this.add.text(250, 20, `次数表示: ${ this.degreeVisible ? 'ON' : 'OFF' }`, {
       color: '#ffffff', backgroundColor: '#3b4775', fontSize: '16px',
       padding: { left: 12, right: 12, top: 9, bottom: 9 },
     }).setInteractive({ useHandCursor: true });
@@ -42,7 +42,7 @@ export class SolutionScene extends Scene {
       interactiveGraph.setDegreeVisible(this.degreeVisible);
       degreeButton.setText(`次数表示: ${ this.degreeVisible ? 'ON' : 'OFF' }`);
     });
-    const matchingEdgesButton = this.add.text(390, 20, '一致表示: OFF', {
+    const matchingEdgesButton = this.add.text(390, 20, `一致表示: ${ this.matchingEdgesVisible ? 'ON' : 'OFF' }`, {
       color: '#ffffff', backgroundColor: '#3b4775', fontSize: '16px',
       padding: { left: 12, right: 12, top: 9, bottom: 9 },
     }).setInteractive({ useHandCursor: true });
@@ -132,5 +132,26 @@ export class SolutionScene extends Scene {
         replayButton.setInteractive({ useHandCursor: true });
       });
     });
+    replayButton.disableInteractive();
+    interactiveGraph.reset(startMatrix);
+
+    slider.setValue(0, false);
+    solutionPath.forEach((step, index) => {
+      this.time.delayedCall(index * 350, () => {
+        const [v1, v2] = step;
+        setStep(index + 1, false);
+        slider.setValue(index + 1, false);
+        interactiveGraph.swapByIndex(v1 - 1, v2 - 1);
+        if (solutionResult.fixedVertices?.[index] !== undefined) {
+          const fixedVertex = solutionResult.fixedVertices[index];
+          interactiveGraph.setFixedNode(fixedVertex - 1, true);
+        }
+        interactiveGraph.highlightMatchingEdges(targetMatrix, this.matchingEdgesVisible);
+      });
+    });
+    this.time.delayedCall(Math.max(1, solutionPath.length) * 350, () => {
+      replayButton.setInteractive({ useHandCursor: true });
+    });
+
   }
 }
