@@ -7,6 +7,7 @@ import { difficulties } from './scenes/difficulty/difficulties.ts';
 
 const config: Phaser.Types.Core.GameConfig = {
   parent: 'game-container',
+  expandParent: false,
   type: Phaser.AUTO,
   width: 1280,
   height: 720,
