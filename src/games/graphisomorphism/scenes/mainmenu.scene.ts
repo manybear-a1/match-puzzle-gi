@@ -9,7 +9,7 @@ export class GameScene extends Scene {
     this.add.text(640, 240, 'Matchstick Puzzle', { fontSize: '24px', color: '#ffffff' }).setOrigin(0.5).setPadding(20, 20, 20, 20);
     this.add.text(640, 300, 'マッチ棒を動かして、正しい形にしてください。', { fontSize: '32px', color: '#ffffff' }).setOrigin(0.5).setPadding(20, 20, 20, 20);
     const playtext = this.add.text(640, 360, 'Game Start', { fontSize: '32px', color: '#ffffff' }).setOrigin(0.5, 0.5).setPadding(20, 20, 20, 20).setInteractive();
-    let difficulty = 'normal';
+    let difficulty = 'easy';
     playtext.on('pointerdown', () => {
       playtext.setStyle({ fontSize: '36px', color: '#ff0000' });
       //this.scene.transition({ target: 'normal', duration: 1000 });
