@@ -136,8 +136,10 @@ export class SolutionScene extends Scene {
     }).setInteractive({ useHandCursor: true }).setOrigin(1, 0);
     replayButton.on('pointerdown', () => {
       replayButton.disableInteractive();
+      replayButton.setStyle({ color: '#888888', backgroundColor: '#555555' });
       playerModified = false;
       interactiveGraph.setInteractionEnabled(false);
+      slider.setInteractionEnabled(false);
       interactiveGraph.reset(startMatrix);
 
       slider.setValue(0, false);
@@ -156,11 +158,15 @@ export class SolutionScene extends Scene {
       });
       this.time.delayedCall(Math.max(1, solutionPath.length) * 350, () => {
         interactiveGraph.setInteractionEnabled(true);
+        slider.setInteractionEnabled(true);
+        replayButton.setStyle({ color: '#ffffff', backgroundColor: '#2d6cdf' });
         replayButton.setInteractive({ useHandCursor: true });
       });
     });
     replayButton.disableInteractive();
+    replayButton.setStyle({ color: '#888888', backgroundColor: '#555555' });
     interactiveGraph.setInteractionEnabled(false);
+    slider.setInteractionEnabled(false);
     interactiveGraph.reset(startMatrix);
 
     slider.setValue(0, false);
@@ -179,6 +185,8 @@ export class SolutionScene extends Scene {
     });
     this.time.delayedCall(Math.max(1, solutionPath.length) * 350, () => {
       interactiveGraph.setInteractionEnabled(true);
+      slider.setInteractionEnabled(true);
+      replayButton.setStyle({ color: '#ffffff', backgroundColor: '#2d6cdf' });
       replayButton.setInteractive({ useHandCursor: true });
     });
 

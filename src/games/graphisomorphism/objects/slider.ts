@@ -5,7 +5,9 @@ export class Slider extends Phaser.GameObjects.Container {
   private readonly minimum: number;
   private readonly maximum: number;
   private currentValue: number;
+  private readonly track: Phaser.GameObjects.Rectangle;
   private readonly handle: Phaser.GameObjects.Arc;
+  private interactionEnabled = true;
   private dragging = false;
   private readonly onChange: (value: number) => void;
 
@@ -27,18 +29,20 @@ export class Slider extends Phaser.GameObjects.Container {
     this.onChange = onChange;
     scene.add.existing(this);
 
-    const track = scene.add.rectangle(0, 0, width, 8, 0xffffff).setOrigin(0, 0.5).setInteractive();
+    this.track = scene.add.rectangle(0, 0, width, 8, 0xffffff).setOrigin(0, 0.5).setInteractive();
     this.handle = scene.add.circle(0, 0, 12, 0x2d6cdf).setInteractive({ useHandCursor: true });
-    this.add([track, this.handle]);
+    this.add([this.track, this.handle]);
 
-    track.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+    this.track.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (!this.interactionEnabled) return;
       this.setValueFromPointer(pointer);
     });
     this.handle.on('pointerdown', () => {
+      if (!this.interactionEnabled) return;
       this.dragging = true;
     });
     scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
-      if (this.dragging && pointer.isDown) {
+      if (this.interactionEnabled && this.dragging && pointer.isDown) {
         this.setValueFromPointer(pointer);
       }
     });
@@ -47,6 +51,23 @@ export class Slider extends Phaser.GameObjects.Container {
     });
 
     this.setValue(value, false);
+  }
+
+  setInteractionEnabled(enabled: boolean): void {
+    this.interactionEnabled = enabled;
+    this.dragging = false;
+    if (enabled) {
+      this.track.setFillStyle(0xffffff);
+      this.track.setInteractive();
+      this.handle.setFillStyle(0x2d6cdf);
+      this.handle.setInteractive({ useHandCursor: true });
+    }
+    else {
+      this.track.setFillStyle(0x777777);
+      this.track.disableInteractive();
+      this.handle.setFillStyle(0x777777);
+      this.handle.disableInteractive();
+    }
   }
 
   setValue(value: number, notify = true): void {
