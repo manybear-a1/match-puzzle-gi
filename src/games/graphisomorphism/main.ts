@@ -19,6 +19,11 @@ const config: Phaser.Types.Core.GameConfig = {
   scale: {
     mode: Phaser.Scale.FIT,
   },
+  input: {
+    mouse: {
+      preventDefaultWheel: false,
+    },
+  },
   scene: [PreloaderScene, GameScene, SolutionScene, ...difficulties],
   backgroundColor: '#21213B',
 };
