@@ -24,6 +24,10 @@ export class SolutionScene extends Scene {
 
     const targetGraph = new Graph(this, 640, 0, 640, 720, targetMatrix);
     const interactiveGraph = new InteractiveGraph(this, 0, 0, 640, 720, startMatrix);
+    let playerModified = false;
+    interactiveGraph.on('playerSwap', () => {
+      playerModified = true;
+    });
     this.add.text(20, 20, 'Solution Viewer', { fontSize: '24px', color: '#ffffff' });
     const stepText = this.add.text(20, 50, 'Step 0', { fontSize: '20px', color: '#ffffff' });
     this.add.text(640, 20, 'End Replay', {
@@ -37,6 +41,9 @@ export class SolutionScene extends Scene {
     });
     targetGraph.setDegreeVisible(this.degreeVisible);
     interactiveGraph.setDegreeVisible(this.degreeVisible);
+    interactiveGraph.on('swapComplete', () => {
+      interactiveGraph.highlightMatchingEdges(targetMatrix, this.matchingEdgesVisible);
+    });
     const degreeButton = this.add.text(250, 20, `次数表示: ${ this.degreeVisible ? 'ON' : 'OFF' }`, {
       color: '#ffffff', backgroundColor: '#3b4775', fontSize: '16px',
       padding: { left: 12, right: 12, top: 9, bottom: 9 },
@@ -66,7 +73,7 @@ export class SolutionScene extends Scene {
 
     const setStep = (step: number, updategraph: boolean = true): void => {
       const selectedStep = Math.max(0, Math.min(pathSteps, Math.round(step)));
-      if (selectedStep === currentStep) {
+      if (selectedStep === currentStep && !playerModified) {
         return;
       }
       sliderValue.setText(`Selected step: ${ selectedStep }/${ pathSteps }`);
@@ -75,6 +82,18 @@ export class SolutionScene extends Scene {
       stepText.setText(selectedStep === 0 ? 'Step 0: Starting position' : `Step ${ selectedStep }: ${ v1 } <-> ${ v2 }${ description ? ` (${ description })` : '' }`);
       if (updategraph) {
         if (Math.abs(selectedStep - currentStep) === 1) {
+          if (playerModified) {
+            interactiveGraph.reset(startMatrix);
+            for (let index = 0; index < currentStep; index++) {
+              const [stepV1, stepV2] = solutionPath[index];
+              interactiveGraph.swapByIndex(stepV1 - 1, stepV2 - 1, false);
+              if (solutionResult.fixedVertices?.[index] !== undefined) {
+                const fixedVertex = solutionResult.fixedVertices[index];
+                interactiveGraph.setFixedNode(fixedVertex - 1, true);
+              }
+            }
+          }
+          playerModified = false;
           const pathIndex = Math.max(selectedStep, currentStep) - 1;
           const [swapV1, swapV2] = solutionPath[pathIndex];
           if (solutionResult.fixedVertices?.[pathIndex] !== undefined) {
@@ -91,7 +110,7 @@ export class SolutionScene extends Scene {
             }
           }
         }
-        else {
+        else if (Math.abs(selectedStep - currentStep)) {
           interactiveGraph.reset(startMatrix);
           for (let index = 0; index < selectedStep; index++) {
             const [stepV1, stepV2] = solutionPath[index];
@@ -117,6 +136,8 @@ export class SolutionScene extends Scene {
     }).setInteractive({ useHandCursor: true }).setOrigin(1, 0);
     replayButton.on('pointerdown', () => {
       replayButton.disableInteractive();
+      playerModified = false;
+      interactiveGraph.setInteractionEnabled(false);
       interactiveGraph.reset(startMatrix);
 
       slider.setValue(0, false);
@@ -134,10 +155,12 @@ export class SolutionScene extends Scene {
         });
       });
       this.time.delayedCall(Math.max(1, solutionPath.length) * 350, () => {
+        interactiveGraph.setInteractionEnabled(true);
         replayButton.setInteractive({ useHandCursor: true });
       });
     });
     replayButton.disableInteractive();
+    interactiveGraph.setInteractionEnabled(false);
     interactiveGraph.reset(startMatrix);
 
     slider.setValue(0, false);
@@ -155,6 +178,7 @@ export class SolutionScene extends Scene {
       });
     });
     this.time.delayedCall(Math.max(1, solutionPath.length) * 350, () => {
+      interactiveGraph.setInteractionEnabled(true);
       replayButton.setInteractive({ useHandCursor: true });
     });
 

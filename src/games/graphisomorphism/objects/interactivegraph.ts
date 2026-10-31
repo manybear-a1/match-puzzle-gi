@@ -6,6 +6,7 @@ import { Arrow } from './arraw';
 // InteractiveGraph extends Graph to add interactivity for swapping vertices
 export class InteractiveGraph extends Graph {
   private selectedVertex: Node | null = null;
+  private interactionEnabled = true;
   private moved_count: number = 0;
   private swapTween: Phaser.Tweens.Tween | null = null;
   private readonly arrow: Arrow;
@@ -30,6 +31,7 @@ export class InteractiveGraph extends Graph {
   }
 
   private selectVertex(node: Node, pointer: Phaser.Input.Pointer): void {
+    if (!this.interactionEnabled) return;
     if (node.isFixed()) return;
     if (this.selectedVertex && this.selectedVertex.isFixed()) {
       this.selectedVertex.setSelected(false);
@@ -58,6 +60,7 @@ export class InteractiveGraph extends Graph {
     const firstIndex = this.nodes.indexOf(firstVertex);
     const secondIndex = this.nodes.indexOf(node);
     this.swapVertices(firstIndex, secondIndex);
+    this.emit('playerSwap');
   }
 
   private updateArrow(pointer: Phaser.Input.Pointer): void {
@@ -77,6 +80,15 @@ export class InteractiveGraph extends Graph {
     this.setAdjacencyMatrix(matrix);
     this.moved_count = 0;
     this.setupNodeInteractions();
+  }
+
+  setInteractionEnabled(enabled: boolean): void {
+    this.interactionEnabled = enabled;
+    if (!enabled && this.selectedVertex !== null) {
+      this.selectedVertex.setSelected(false);
+      this.selectedVertex = null;
+      this.arrow.hide();
+    }
   }
 
   swapByIndex(v1: number, v2: number, animate = true): void {
