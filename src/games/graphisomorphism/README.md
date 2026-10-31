@@ -5,6 +5,56 @@
 マッチ棒パズル（の変種）です。マッチ棒そのものを動かす代わりにマッチ棒がくっついている頂点を動かします。
 
 <video width="50%" src="./img/gameplay.mp4" controls></video>
+
+# その他機能
+- 難易度設定
+
+  Easy, Normal, Hard, Impossibleの四つ。
+
+  ![easy](./img/easy.png)Easy 
+  
+  ![normal](./img/normal.png)Normal 
+  
+  ![hard](./img/hard.png)Hard 
+  
+  ![impossible](./img/impossible.png)Impossible
+
+  それぞれ盤面のサイズがEasyが2x3頂点、Normalが3x3頂点、Hardが4x4頂点、Impossibleが5x5頂点となっている。
+
+ 
+- ハイライト機能
+  
+  関節の上にポインタをホバーさせることでその関節と、関節に直接繋がっているマッチ棒をハイライトできる。
+
+  ![関節に直接繋がっているマッチ棒のハイライト](./img/highlight-node.png)関節に直接繋がっているマッチ棒のハイライト
+
+  位置が確定している関節を右クリックすることで固定することができ、固定された関節は青色になる。
+
+  ![固定された関節](./img/fixed.png)固定された関節
+
+  マッチ棒の上にポインタをホバーさせることでそのマッチ棒と、マッチ棒に直接繋がっている関節をハイライトできる。
+
+  ![マッチ棒に直接繋がっている関節のハイライト](./img/highlight-edge.png)マッチ棒に直接繋がっている関節のハイライト
+
+- ヒント機能
+  
+  左上の「次数表示」「一致表示」ボタンを押すことで、次数（点に繋がっているマッチ棒の数）の表示と、各マッチ棒が一致しているかどうかの表示を切り替えることができる。
+
+- 解答機能
+  
+  EasyとNormal、およびHardとImpossibleの一部の問題では、最短手数の計算表示機能が利用でき、ヒントや解答として利用できる。
+  
+  右上の「Show Shortest Solution」を押すことで、最短手数の解答を表示するモードに切り替わる。「Show Shortest Solution」の左の「Next Shortest Step」ボタンを押すことで、現在の盤面から始めた最短手数の解答の次の手順をコンピューターに代わりに操作してもらうことができる。
+
+  ![解答表示ボタンの位置](./img/solution-button.png)解答表示ボタンの位置
+
+  解答表示場面では、「Replay From Start」ボタンを押すことで、最初から順番に解答の手順を表示することができ、またその下のシークバーを動かすことで途中までの解答を表示することができる。問題によっては手順ごとの考え方が表示される場合がある。
+
+  <video width="50%" src="./img/solution.mp4" controls></video>
+
+  このパズルに備わっているパズルソルバーは[戦略](./editorial/strategy.pdf)に基づいて実装されている。
+
+
 # ルール
 
 ## ざっくりとしたルール
@@ -35,48 +85,6 @@
 このパズルは必ず解をもつようにランダムに生成されます。（盤面の生成確率はおそらく等確率ではありません。生成コードは（[ここ](./puzzlegenerator/puzzlegenerator.ts)にあります）このゲームの目標は最小の交換回数で同じパターンを作ることです。
 
 スコアは今のところEasyとNormalにしかありません。EasyとNormalにおいては、スコアは最小の交換回数/あなたが頂点を交換した回数 * 100で計算されます。最大で100点です。
-# その他機能
-- 難易度設定
-
-  Easy, Normal, Hard, Impossibleの四つ。
-
-  ![easy](./img/easy.png)Easy 
-  
-  ![normal](./img/normal.png)Normal 
-  
-  ![hard](./img/hard.png)Hard 
-  
-  ![impossible](./img/impossible.png)Impossible
-
-  それぞれ盤面のサイズがEasyが2x3頂点、Normalが3x3頂点、Hardが4x4頂点、Impossibleが5x5頂点となっている。
-
- 
-- ハイライト機能
-  
-  関節の上にポインタをホバーさせることでその関節と、関節に直接繋がっているマッチ棒をハイライトできる。
-
-  ![関節に直接繋がっているマッチ棒のハイライト](./img/highlight-node.png)関節に直接繋がっているマッチ棒のハイライト
-
-  位置が確定している関節を右クリックすることで固定することができ、固定された関節は青色になる。
-
-  ![固定された関節](./img/fixed.png)固定された関節
-
-  マッチ棒の上にポインタをホバーさせることでそのマッチ棒と、マッチ棒に直接繋がっている関節をハイライトできる。
-
-  ![マッチ棒に直接繋がっている関節のハイライト](./img/highlight-edge.png)マッチ棒に直接繋がっている関節のハイライト
-- 解答機能
-  
-  EasyとNormal、およびHardとImpossibleの一部の問題では、最短手数の計算表示機能が利用でき、ヒントや解答として利用できる。
-  
-  右上の「Show Shortest Solution」を押すことで、最短手数の解答を表示するモードに切り替わる。「Show Shortest Solution」の左の「Next Shortest Step」ボタンを押すことで、現在の盤面から始めた最短手数の解答の次の手順をコンピューターに代わりに操作してもらうことができる。
-
-  ![解答表示ボタンの位置](./img/solution-button.png)解答表示ボタンの位置
-
-  解答表示場面では、「Replay From Start」ボタンを押すことで、最初から順番に解答の手順を表示することができ、またその下のシークバーを動かすことで途中までの解答を表示することができる。問題によっては手順ごとの考え方が表示される場合がある。
-
-  <video width="50%" src="./img/solution.mp4" controls></video>
-
-  このパズルに備わっているパズルソルバーは[戦略](./editorial/strategy.pdf)に基づいて実装されている。
 
 # TODO（やりたいこと）
 
