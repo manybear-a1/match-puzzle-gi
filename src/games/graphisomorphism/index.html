@@ -20,6 +20,12 @@
   <video width="50%" src="./img/gameplay.mp4" controls autoplay muted loop></video>
   <p>詳細なゲーム説明は一番下にあるよ！</p>
   <div id="game-container"></div>
+  <div id="qrcode">スマホでも遊べるよ！このQRコードをスキャンしてね！(URL:
+    https://manybear-a1.github.io/match-puzzle-gi/src/games/graphisomorphism/index.html)</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script type="text/javascript">
+    new QRCode(document.getElementById("qrcode"), "https://manybear-a1.github.io/match-puzzle-gi/src/games/graphisomorphism/index.html");
+  </script>
   <zero-md src="./README.md"></zero-md>
 </body>
 
