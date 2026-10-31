@@ -95,12 +95,17 @@ export class GameBase extends Scene {
         color: '#ffffff',
         wordWrap: { width: 300 },
       }).setOrigin(1, 0);
-      solutionButton.on('pointerdown', () => {
+      const markSolved = (): void => {
+        nextStepButton.setText('Solved!');
+        nextStepButton.setStyle({ color: '#888888', backgroundColor: '#555555' });
+        nextStepButton.disableInteractive();
+      };
+      interactiveGraph.on('swapComplete', () => {
         if (PuzzleSolver.isSolved(interactiveGraph.getAdjacencyMatrix(), generatedMatrix)) {
-          solutionText.setText('Already solved.');
-          return;
+          markSolved();
         }
-
+      });
+      solutionButton.on('pointerdown', () => {
         this.scene.start('solution', {
           startMatrix: shuffledMatrix,
           targetMatrix: generatedMatrix,
@@ -110,7 +115,7 @@ export class GameBase extends Scene {
       nextStepButton.on('pointerdown', () => {
         const currentResult = MetaSolver.solvePath(interactiveGraph.getAdjacencyMatrix(), generatedMatrix);
         if (PuzzleSolver.isSolved(interactiveGraph.getAdjacencyMatrix(), generatedMatrix)) {
-          solutionText.setText('Already solved.');
+          markSolved();
           return;
         }
         if (currentResult.path.length === 0) {
@@ -128,7 +133,12 @@ export class GameBase extends Scene {
         solutionText.setText(`Next: ${ v1 } <-> ${ v2 }`);
         interactiveGraph.swapByIndex(v1 - 1, v2 - 1);
         this.time.delayedCall(350, () => {
-          nextStepButton.setInteractive({ useHandCursor: true });
+          if (PuzzleSolver.isSolved(interactiveGraph.getAdjacencyMatrix(), generatedMatrix)) {
+            markSolved();
+          }
+          else {
+            nextStepButton.setInteractive({ useHandCursor: true });
+          }
         });
       });
     });
