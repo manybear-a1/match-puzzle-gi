@@ -6,8 +6,8 @@ import { MetaSolver } from '../puzzlesolver/meta.ts';
 import { PuzzleGenerator } from '../puzzlegenerator/puzzlegenerator.ts';
 export class GameBase extends Scene {
   private nodeCount: number;
-  private degreeVisible: boolean = false;
-  private matchingEdgesVisible: boolean = false;
+  private degreeVisible: boolean = true;
+  private matchingEdgesVisible: boolean = true;
   constructor(name: string, nodeCount: number) {
     super(name);
     this.nodeCount = nodeCount;
@@ -32,18 +32,18 @@ export class GameBase extends Scene {
       if (PuzzleSolver.isSolved(interactiveGraph.getAdjacencyMatrix(), generatedMatrix)) {
         interactiveGraph.playBurningEffect();
         targetGraph.playBurningEffect();
-        this.add.text(640, 20, 'End Game', { fontSize: '24px', color: '#00ff00' }).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
-          this.scene.stop();
-          this.scene.launch('game');
-        }).setOrigin(0.5, 0);
       }
 
     });
+    this.add.text(640, 20, 'End Game', { fontSize: '24px', color: '#00ff00' }).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+      this.scene.stop();
+      this.scene.launch('game');
+    }).setOrigin(0.5, 0);
     const movesText = this.add.text(20, 20, 'Moves Made: 0', { fontSize: '24px', color: '#ffffff' });
     interactiveGraph.on('swap', () => {
       movesText.setText(`Moves Made: ${ interactiveGraph.getMovedCount() }`);
     });
-    const degreeButton = this.add.text(250, 20, '次数表示: OFF', {
+    const degreeButton = this.add.text(250, 20, `次数表示: ${ this.degreeVisible ? 'ON' : 'OFF' }`, {
       color: '#ffffff', backgroundColor: '#3b4775', fontSize: '16px',
       padding: { left: 12, right: 12, top: 9, bottom: 9 },
     }).setInteractive({ useHandCursor: true });
@@ -55,7 +55,7 @@ export class GameBase extends Scene {
       interactiveGraph.setDegreeVisible(this.degreeVisible);
       degreeButton.setText(`次数表示: ${ this.degreeVisible ? 'ON' : 'OFF' }`);
     });
-    const matchingEdgesButton = this.add.text(390, 20, '一致表示: OFF', {
+    const matchingEdgesButton = this.add.text(390, 20, `一致表示: ${ this.matchingEdgesVisible ? 'ON' : 'OFF' }`, {
       color: '#ffffff', backgroundColor: '#3b4775', fontSize: '16px',
       padding: { left: 12, right: 12, top: 9, bottom: 9 },
     }).setInteractive({ useHandCursor: true });
