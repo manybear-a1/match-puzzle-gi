@@ -118,6 +118,7 @@ export class Node extends Phaser.GameObjects.Container {
   }
 
   setFixed(fixed: boolean): void {
+    if (this.fixed === fixed) return;
     this.fixed = fixed;
     if (fixed) {
       this.circle.setFillStyle(0x66ccff, 0.9);
@@ -127,6 +128,7 @@ export class Node extends Phaser.GameObjects.Container {
       this.circle.setFillStyle(0xffffff, 0.75);
       this.circle.setStrokeStyle(1, 0x000000);
     }
+    this.emit('fixedChanged', fixed);
   }
 
   isFixed(): boolean {

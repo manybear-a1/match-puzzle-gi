@@ -74,8 +74,15 @@ export class Graph extends Phaser.GameObjects.Container {
       const nodeX = col * cellWidth + cellWidth / 2;
       const nodeY = row * cellHeight + cellHeight / 2;
 
-      this.nodes[i] = new Node(this.scene, nodeX, nodeY);
-      this.add(this.nodes[i]);
+      const node = new Node(this.scene, nodeX, nodeY);
+      node.on('fixedChanged', (fixed: boolean) => {
+        const index = this.nodes.indexOf(node);
+        if (index >= 0) {
+          this.emit('fixedChanged', { index, fixed });
+        }
+      });
+      this.nodes[i] = node;
+      this.add(node);
     }
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
@@ -138,6 +145,9 @@ export class Graph extends Phaser.GameObjects.Container {
       return;
     }
     this.nodes[i].setFixed(fixed);
+  }
+  setAllFixed(fixed: boolean): void {
+    for (const node of this.nodes) node.setFixed(fixed);
   }
   destroyNodes(): void {
     for (const node of this.nodes) {

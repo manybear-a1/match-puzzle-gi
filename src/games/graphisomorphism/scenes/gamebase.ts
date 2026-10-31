@@ -24,6 +24,12 @@ export class GameBase extends Scene {
       shuffledMatrix = PuzzleGenerator.shuffleMatrix(generatedMatrix);
     }
     const interactiveGraph = new InteractiveGraph(this, 0, 0, 640, 720, shuffledMatrix);
+    interactiveGraph.on('fixedChanged', ({ index, fixed }: { index: number; fixed: boolean; }) => {
+      targetGraph.setFixedNode(index, fixed);
+    });
+    targetGraph.on('fixedChanged', ({ index, fixed }: { index: number; fixed: boolean; }) => {
+      interactiveGraph.setFixedNode(index, fixed);
+    });
     this.input.mouse?.disableContextMenu();
     interactiveGraph.highlightMatchingEdges(generatedMatrix, this.matchingEdgesVisible);
     //console.log('Shuffled Matrix:', shuffledMatrix);

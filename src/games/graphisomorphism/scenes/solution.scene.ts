@@ -25,6 +25,16 @@ export class SolutionScene extends Scene {
     const targetGraph = new Graph(this, 640, 0, 640, 720, targetMatrix);
     const interactiveGraph = new InteractiveGraph(this, 0, 0, 640, 720, startMatrix);
     let playerModified = false;
+    interactiveGraph.on('fixedChanged', ({ index, fixed }: { index: number; fixed: boolean; }) => {
+      targetGraph.setFixedNode(index, fixed);
+    });
+    targetGraph.on('fixedChanged', ({ index, fixed }: { index: number; fixed: boolean; }) => {
+      interactiveGraph.setFixedNode(index, fixed);
+    });
+    const resetGraphs = (): void => {
+      interactiveGraph.reset(startMatrix);
+      targetGraph.setAllFixed(false);
+    };
     interactiveGraph.on('playerSwap', () => {
       playerModified = true;
     });
@@ -83,7 +93,7 @@ export class SolutionScene extends Scene {
       if (updategraph) {
         if (Math.abs(selectedStep - currentStep) === 1) {
           if (playerModified) {
-            interactiveGraph.reset(startMatrix);
+            resetGraphs();
             for (let index = 0; index < currentStep; index++) {
               const [stepV1, stepV2] = solutionPath[index];
               interactiveGraph.swapByIndex(stepV1 - 1, stepV2 - 1, false);
@@ -111,7 +121,7 @@ export class SolutionScene extends Scene {
           }
         }
         else if (Math.abs(selectedStep - currentStep)) {
-          interactiveGraph.reset(startMatrix);
+          resetGraphs();
           for (let index = 0; index < selectedStep; index++) {
             const [stepV1, stepV2] = solutionPath[index];
             interactiveGraph.swapByIndex(stepV1 - 1, stepV2 - 1, false);
@@ -140,7 +150,7 @@ export class SolutionScene extends Scene {
       playerModified = false;
       interactiveGraph.setInteractionEnabled(false);
       slider.setInteractionEnabled(false);
-      interactiveGraph.reset(startMatrix);
+      resetGraphs();
 
       slider.setValue(0, false);
       solutionPath.forEach((step, index) => {
@@ -167,7 +177,7 @@ export class SolutionScene extends Scene {
     replayButton.setStyle({ color: '#888888', backgroundColor: '#555555' });
     interactiveGraph.setInteractionEnabled(false);
     slider.setInteractionEnabled(false);
-    interactiveGraph.reset(startMatrix);
+    resetGraphs();
 
     slider.setValue(0, false);
     solutionPath.forEach((step, index) => {
