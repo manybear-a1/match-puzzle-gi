@@ -37,6 +37,7 @@ export class Match extends Phaser.GameObjects.Graphics {
       this.startNode?.unhighlight();
       this.endNode?.unhighlight();
     });
+    this.setAlpha(0.7);
     this.draw();
     this.setInteractive(this.hitArea, this.isPointOnCurrentStick.bind(this));
   }
